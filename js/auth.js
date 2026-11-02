@@ -207,7 +207,7 @@ function openAthlete(id) {
     </div>
 
     ${
-      athlete.marks
+      athlete.modality === "Atletismo" && athlete.marks
         ? `<p class="detail-copy">
             <strong>Marcas e resultados:</strong>
             ${escapeHtml(athlete.marks)}

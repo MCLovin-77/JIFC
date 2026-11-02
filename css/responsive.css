@@ -174,7 +174,8 @@
 }
 @media (max-width: 780px) {
   .bracket-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(210px, 1fr));
+    min-width: 680px;
   }
   .group-grid {
     grid-template-columns: 1fr;

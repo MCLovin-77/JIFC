@@ -16,6 +16,10 @@ function escapeHtml(value) {
 
 function normalizeAthlete(athlete) {
   const migratedAthlete = { ...athlete };
+  const defaultAthlete = athletes.find(item => item.id === athlete.id);
+  if (!["Masculino", "Feminino"].includes(migratedAthlete.naipe)) {
+    migratedAthlete.naipe = defaultAthlete?.naipe || "Masculino";
+  }
   migratedAthlete.modality =
     modalityNameAliases[migratedAthlete.modality] ||
     migratedAthlete.modality;
@@ -153,6 +157,10 @@ function loadEditorData() {
           Object.prototype.hasOwnProperty.call(athlete, key)
         )
       ) ||
+        saved.athletes.some(
+          athlete =>
+            !["Masculino", "Feminino"].includes(athlete.naipe)
+        ) ||
         saved.athletes.some(athlete =>
           Object.prototype.hasOwnProperty.call(
             modalityNameAliases,
@@ -169,15 +177,57 @@ function loadEditorData() {
     }
 
     if (Array.isArray(saved.medals)) {
+      const previousSeededMedals = {
+        CA: { gold: 12, silver: 8, bronze: 5 },
+        CO: { gold: 10, silver: 9, bronze: 7 },
+        RS: { gold: 8, silver: 10, bronze: 6 },
+        BL: { gold: 7, silver: 5, bronze: 9 },
+        AR: { gold: 6, silver: 7, bronze: 5 },
+        SB: { gold: 0, silver: 0, bronze: 0 },
+        BR: { gold: 0, silver: 0, bronze: 0 },
+        VI: { gold: 0, silver: 0, bronze: 0 },
+        IB: { gold: 0, silver: 0, bronze: 0 },
+        LU: { gold: 0, silver: 0, bronze: 0 },
+        FR: { gold: 0, silver: 0, bronze: 0 },
+        SO: { gold: 0, silver: 0, bronze: 0 },
+        AL: { gold: 0, silver: 0, bronze: 0 },
+        SR: { gold: 0, silver: 0, bronze: 0 },
+        SF: { gold: 0, silver: 0, bronze: 0 }
+      };
+      const restoredMedals = saved.medals.map(medal => {
+        const previous = previousSeededMedals[medal.code];
+        const current = medals.find(item => item.code === medal.code);
+        const hasPreviousSeed =
+          previous &&
+          current &&
+          ["gold", "silver", "bronze"].every(
+            key => Number(medal[key]) === previous[key]
+          );
+
+        return hasPreviousSeed
+          ? {
+              ...medal,
+              gold: current.gold,
+              silver: current.silver,
+              bronze: current.bronze
+            }
+          : medal;
+      });
       const savedMedalCodes = new Set(
-        saved.medals.map(medal => medal.code)
+        restoredMedals.map(medal => medal.code)
       );
       requiresMigration =
         requiresMigration ||
-        medals.some(medal => !savedMedalCodes.has(medal.code));
+        medals.some(medal => !savedMedalCodes.has(medal.code)) ||
+        restoredMedals.some(
+          (medal, index) =>
+            medal.gold !== saved.medals[index].gold ||
+            medal.silver !== saved.medals[index].silver ||
+            medal.bronze !== saved.medals[index].bronze
+        );
       const mergedMedals = mergeSeededRecords(
         medals,
-        saved.medals,
+        restoredMedals,
         medal => medal.code
       );
       medals.splice(0, medals.length, ...mergedMedals);
@@ -219,15 +269,29 @@ function loadEditorData() {
     }
 
     if (Array.isArray(saved.campuses)) {
+      const restoredCampuses = saved.campuses.map(campus => {
+        const defaultCampus = campuses.find(
+          item => item.code === campus.code
+        );
+
+        return {
+          ...campus,
+          athletes: campus.athletes ?? defaultCampus?.athletes
+        };
+      });
       const savedCampusCodes = new Set(
-        saved.campuses.map(campus => campus.code)
+        restoredCampuses.map(campus => campus.code)
       );
       requiresMigration =
         requiresMigration ||
-        campuses.some(campus => !savedCampusCodes.has(campus.code));
+        campuses.some(campus => !savedCampusCodes.has(campus.code)) ||
+        restoredCampuses.some(
+          (campus, index) =>
+            campus.athletes !== saved.campuses[index].athletes
+        );
       const mergedCampuses = mergeSeededRecords(
         campuses,
-        saved.campuses,
+        restoredCampuses,
         campus => campus.code
       );
       campuses.splice(0, campuses.length, ...mergedCampuses);
@@ -323,8 +387,9 @@ function rankedMedals() {
   );
 }
 
-function medalRows() {
+function medalRows(limit = medals.length) {
   return rankedMedals()
+    .slice(0, limit)
     .map((campus, index) => {
       const total =
         Number(campus.gold) +

@@ -86,6 +86,11 @@
   border-color: #405145;
   color: #e0e9e1;
 }
+[data-theme="dark"] .naipe-option:not(.active) {
+  background: #202b23;
+  border-color: #3a4a3e;
+  color: #d0d9d1;
+}
 [data-theme="dark"] .theme-toggle:hover {
   background: #34453a;
 }

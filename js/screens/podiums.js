@@ -44,11 +44,7 @@ function renderPodios() {
     .join("");
 
   pageContent.innerHTML = `
-    <p class="eyebrow">CADA CONQUISTA TEM UMA HISTÓRIA</p>
-    <h1>Pódios &amp; resultados</h1>
-    <p class="page-subtitle">
-      Celebre os destaques da edição e acompanhe o quadro geral de medalhas.
-    </p>
+    <h1>Pódios e resultados</h1>
 
     <div class="list-toolbar">
       <select
@@ -58,12 +54,6 @@ function renderPodios() {
       >
         <option value="">Todas as modalidades</option>
         ${modalities.map(modalityOption).join("")}
-      </select>
-      <select class="select-box" id="podium-type" aria-label="Tipo de resultado">
-        <option value="">Todos os pódios</option>
-        <option>Ouro</option>
-        <option>Prata</option>
-        <option>Bronze</option>
       </select>
     </div>
 
@@ -81,8 +71,7 @@ function renderPodios() {
     <section class="panel podium-table-panel">
       <div class="panel-title-row">
         <div>
-          <h3>Quadro de medalhas</h3>
-          <p>Classificação geral · JIFC 2025</p>
+          <h2>Quadro de medalhas</h2>
         </div>
       </div>
       <div class="data-table-wrap">

@@ -1,43 +1,10 @@
 function renderModalities() {
   pageContent.innerHTML = `
-    <p class="eyebrow">ESPORTE PARA TODO MUNDO</p>
-    <h1>Modalidades</h1>
-    <p class="page-subtitle">
-      Descubra os esportes, acompanhe as disputas e encontre sua próxima torcida.
-    </p>
-
-    <div class="list-toolbar">
-      <label class="search-box">
-        <span aria-hidden="true">${MEDIA.icons.search}</span>
-        <input
-          id="modality-search"
-          type="search"
-          placeholder="Buscar modalidade..."
-          aria-label="Buscar modalidades"
-        />
-      </label>
-    </div>
+    <h1 style="margin-bottom: 40px;">Modalidades</h1>
 
     <div class="card-grid" id="modality-grid">
       ${modalityCards(modalities)}
     </div>`;
-
-  document
-    .getElementById("modality-search")
-    .addEventListener("input", event => {
-      const query = event.target.value.toLocaleLowerCase("pt-BR");
-      const filteredModalities = modalities.filter(modality => {
-        const searchableText =
-          `${modality.name} ${modality.desc}`.toLocaleLowerCase("pt-BR");
-
-        return searchableText.includes(query);
-      });
-
-      document.getElementById("modality-grid").innerHTML =
-        filteredModalities.length
-          ? modalityCards(filteredModalities)
-          : `<div class="empty-state">Nenhuma modalidade encontrada.</div>`;
-    });
 }
 
 function modalityCards(items) {
@@ -52,7 +19,6 @@ function modalityCards(items) {
             <span class="position-pill">JIFC 2025</span>
           </div>
           <h3>${escapeHtml(modality.name)}</h3>
-          <p>${escapeHtml(modality.desc)}</p>
           <p>
             ${escapeHtml(modalityCategoryLabel(modality))} ·
             ${escapeHtml(modalityNaipeLabel(modality))} ·

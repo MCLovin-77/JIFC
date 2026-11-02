@@ -81,6 +81,7 @@ function renderHome() {
         <table class="medal-table">
           <thead>
             <tr>
+              <th>#</th>
               <th>CAMPUS</th>
               <th>OURO</th>
               <th>PRATA</th>
@@ -88,7 +89,7 @@ function renderHome() {
               <th>TOTAL</th>
             </tr>
           </thead>
-          <tbody>${medalRows()}</tbody>
+          <tbody>${medalRows(5)}</tbody>
         </table>
       </section>
 

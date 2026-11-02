@@ -24,48 +24,50 @@ function renderModalityDetails() {
     return;
   }
 
-  if (modality.name === "Atletismo") {
-    pageContent.innerHTML = renderAthleticsModality(modality);
-    return;
-  }
-
   const relatedAthletes = athletes.filter(
-    athlete => athlete.modality === modality.name
+    athlete =>
+      athlete.modality === modality.name &&
+      athlete.naipe === selectedNaipe
   );
-  if (modality.name === "Tênis de mesa") {
-    pageContent.innerHTML = renderTableTennisDetails(
+  let content;
+
+  if (modality.name === "Atletismo") {
+    content = renderAthleticsModality(modality, relatedAthletes);
+  } else if (modality.name === "Tênis de mesa") {
+    content = renderTableTennisDetails(
       modality,
       relatedAthletes
     );
-    return;
-  }
-  if (modality.category === "individual") {
-    pageContent.innerHTML = renderIndividualModalityDetails(
+  } else if (modality.category === "individual") {
+    content = renderIndividualModalityDetails(
       modality,
       relatedAthletes
     );
-    return;
+  } else {
+    content = renderTeamModalityDetails(modality, relatedAthletes);
   }
 
-  const groupCards = tournamentGroups.map(renderTournamentGroup).join("");
+  pageContent.innerHTML = content;
+  bindNaipeSelector();
+}
+
+function renderTeamModalityDetails(modality, relatedAthletes) {
+  const groupCards = tournamentGroups[selectedNaipe]
+    .map(renderTournamentGroup)
+    .join("");
   const bracket = renderTournamentBracket;
 
-  pageContent.innerHTML = `
+  return `
     <button class="section-link back-link" data-page="modalidades">
       ${MEDIA.icons.leftArrow} Voltar para modalidades
     </button>
+    ${renderNaipeSelector()}
     <p class="eyebrow">MODALIDADE · JIFC 2025</p>
     <h1>${escapeHtml(modality.name)}</h1>
-    <p class="page-subtitle">${escapeHtml(modality.desc)}</p>
     ${modalitySummary(modality)}
 
     <section class="detail-hero">
-      <p class="eyebrow">FASE DE GRUPOS · ELIMINATÓRIAS</p>
-      <h2>O caminho até a final.</h2>
-      <p>
-        Veja a composição demonstrativa dos grupos e o formato previsto
-        para as quartas de final, semifinais e final.
-      </p>
+      <h2 class="eyebrow">FASE DE GRUPOS · ELIMINATÓRIAS</h2>
       <div class="detail-stats">
         <span>
           <strong>${escapeHtml(modality.athletes)}</strong>
@@ -82,19 +84,12 @@ function renderModalityDetails() {
       </div>
     </section>
 
-    <div class="form-note">
-      Chaveamento ilustrativo para demonstrar o formato da competição.
-      Grupos, confrontos, horários e resultados oficiais ainda precisam
-      ser confirmados pela organização.
-    </div>
-
     <section class="panel tournament-section">
       <div class="panel-title-row">
         <div>
-          <h3>Fase de grupos</h3>
+          <h2 style="margin-bottom: 10px;">Fase de grupos</h2>
           <p>Classificam-se os dois primeiros colocados de cada grupo.</p>
         </div>
-        <span class="status-pill scheduled">GRUPOS ILUSTRATIVOS</span>
       </div>
       <div class="group-grid">${groupCards}</div>
     </section>
@@ -102,31 +97,33 @@ function renderModalityDetails() {
     <section class="panel tournament-section">
       <div class="panel-title-row">
         <div>
-          <h3>Eliminatórias</h3>
+          <h2 style="margin-bottom: 10px;">Eliminatórias</h2>
           <p>Confrontos previstos após a fase de grupos.</p>
         </div>
       </div>
-      <div class="bracket-grid">
+      <div class="bracket-scroll">
+        <div class="bracket-grid">
         ${bracket("Quartas de final", [
           "1º Grupo A × 2º Grupo B",
           "1º Grupo C × 2º Grupo D",
           "1º Grupo B × 2º Grupo A",
           "1º Grupo D × 2º Grupo C"
-        ])}
+        ], "quarterfinals")}
         ${bracket("Semifinais", [
           "Vencedor QF 1 × Vencedor QF 2",
           "Vencedor QF 3 × Vencedor QF 4"
-        ])}
+        ], "semifinals")}
         ${bracket("Final", [
           "Vencedor semifinal 1 × Vencedor semifinal 2"
-        ])}
+        ], "final")}
+        </div>
       </div>
     </section>
 
     <section class="panel tournament-section">
       <div class="panel-title-row">
         <div>
-          <h3>Atletas em destaque</h3>
+          <h2 style="margin-bottom: 10px;">Atletas em destaque</h2>
           <p>Perfis associados a esta modalidade</p>
         </div>
       </div>
@@ -142,13 +139,42 @@ function renderModalityDetails() {
     </section>`;
 }
 
+function renderNaipeSelector() {
+  return `
+    <div class="naipe-selector" role="group" aria-label="Selecionar naipe">
+      ${["Masculino", "Feminino"]
+        .map(
+          naipe => `
+            <button
+              type="button"
+              class="naipe-option${selectedNaipe === naipe ? " active" : ""}"
+              data-modality-naipe="${naipe}"
+              aria-pressed="${selectedNaipe === naipe}"
+            >
+              ${naipe}
+            </button>`
+        )
+        .join("")}
+    </div>`;
+}
+
+function bindNaipeSelector() {
+  pageContent.querySelectorAll("[data-modality-naipe]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (selectedNaipe === button.dataset.modalityNaipe) return;
+      selectedNaipe = button.dataset.modalityNaipe;
+      renderModalityDetails();
+    });
+  });
+}
+
 function modalitySummary(modality) {
   return `
     <p class="page-subtitle">
       <strong>Categoria:</strong>
       ${escapeHtml(modalityCategoryLabel(modality))} ·
       <strong>Naipe:</strong>
-      ${escapeHtml(modalityNaipeLabel(modality))} ·
+      ${escapeHtml(selectedNaipe)} ·
       <strong>Status:</strong>
       ${escapeHtml(modalityStatusLabel(modality.status))}
     </p>`;
@@ -156,12 +182,13 @@ function modalitySummary(modality) {
 
 function renderTableTennisDetails(modality, relatedAthletes) {
   const submodalityRows = (modality.submodalities || [])
+    .filter(submodality => (submodality.naipes || []).includes(selectedNaipe))
     .map(
       (submodality, index) => `
         <tr>
           <td>${String(index + 1).padStart(2, "0")}</td>
           <td>${escapeHtml(submodality.name)}</td>
-          <td>${escapeHtml((submodality.naipes || []).join(" e "))}</td>
+          <td>${escapeHtml(selectedNaipe)}</td>
           <td>${escapeHtml(modalityStatusLabel(submodality.status))}</td>
         </tr>`
     )
@@ -171,6 +198,7 @@ function renderTableTennisDetails(modality, relatedAthletes) {
     <button class="section-link back-link" data-page="modalidades">
       ${MEDIA.icons.leftArrow} Voltar para modalidades
     </button>
+    ${renderNaipeSelector()}
     <p class="eyebrow">MODALIDADE · JIFC 2025</p>
     <h1>${escapeHtml(modality.name)}</h1>
     <p class="page-subtitle">${escapeHtml(modality.desc)}</p>
@@ -205,6 +233,7 @@ function renderIndividualModalityDetails(modality, relatedAthletes) {
     <button class="section-link back-link" data-page="modalidades">
       ${MEDIA.icons.leftArrow} Voltar para modalidades
     </button>
+    ${renderNaipeSelector()}
     <p class="eyebrow">MODALIDADE · JIFC 2025</p>
     <h1>${escapeHtml(modality.name)}</h1>
     <p class="page-subtitle">${escapeHtml(modality.desc)}</p>
@@ -241,15 +270,16 @@ function renderModalityAthletes(relatedAthletes) {
     </section>`;
 }
 
-function renderAthleticsModality(modality) {
+function renderAthleticsModality(modality, relatedAthletes) {
   const eventRows = athleticsEvents
+    .filter(event => (event.naipes || []).includes(selectedNaipe))
     .map(
       (event, index) => `
         <tr>
           <td>${String(index + 1).padStart(2, "0")}</td>
           <td>${escapeHtml(event.name)}</td>
           <td>${escapeHtml(event.category)}</td>
-          <td>${escapeHtml((event.naipes || []).join(" e "))}</td>
+          <td>${escapeHtml(selectedNaipe)}</td>
           <td>
             <span
               class="status-pill${
@@ -267,6 +297,7 @@ function renderAthleticsModality(modality) {
     <button class="section-link back-link" data-page="modalidades">
       ${MEDIA.icons.leftArrow} Voltar para modalidades
     </button>
+    ${renderNaipeSelector()}
     <p class="eyebrow">MODALIDADE · JIFC 2025</p>
     <h1>${escapeHtml(modality.name)}</h1>
     ${modalitySummary(modality)}
@@ -325,7 +356,8 @@ function renderAthleticsModality(modality) {
     <div class="form-note">
       As provas e os resultados são demonstrativos até a publicação
       da programação oficial do JIFC.
-    </div>`;
+    </div>
+    ${renderModalityAthletes(relatedAthletes)}`;
 }
 
 function renderTournamentGroup(group) {
@@ -368,11 +400,16 @@ function renderTournamentGroup(group) {
     </section>`;
 }
 
-function renderTournamentBracket(title, matches) {
+function renderTournamentBracket(title, matches, round) {
+  const matchRows = {
+    quarterfinals: [1, 3, 5, 7],
+    semifinals: [2, 6],
+    final: [4]
+  }[round];
   const matchCards = matches
     .map(
       (label, index) => `
-        <article class="bracket-match">
+        <article class="bracket-match" style="grid-row: ${matchRows[index]}">
           <span class="bracket-number">
             ${String(index + 1).padStart(2, "0")}
           </span>
@@ -388,6 +425,6 @@ function renderTournamentBracket(title, matches) {
   return `
     <section class="bracket-round">
       <h3>${escapeHtml(title)}</h3>
-      ${matchCards}
+      <div class="bracket-match-grid">${matchCards}</div>
     </section>`;
 }

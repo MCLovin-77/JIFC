@@ -99,6 +99,12 @@ function renderAdminAthleteForm() {
           modalities.map(item => item.name)
         ),
         editorSelect(
+          "Naipe",
+          "naipe",
+          athlete.naipe || "Masculino",
+          ["Masculino", "Feminino"]
+        ),
+        editorSelect(
           "Posição",
           "position",
           athlete.position,
@@ -302,9 +308,9 @@ function renderAdminCampusForm() {
         editorField("Sigla", "code", campus.code),
         editorField("Descrição", "desc", campus.desc),
         editorField(
-          "Quantidade de estudantes",
-          "students",
-          campus.students
+          "Quantidade de atletas",
+          "athletes",
+          campus.athletes
         ),
         editorField("Imagem (URL)", "image", campus.image, "url")
       ])}

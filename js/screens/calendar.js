@@ -1,10 +1,7 @@
 function renderCalendar() {
   pageContent.innerHTML = `
     <p class="eyebrow">${scheduleDateRangeLabel} · EDIÇÃO 2025</p>
-    <h1>Calendário</h1>
-    <p class="page-subtitle">
-      Toda a programação do JIFC em um só lugar.
-    </p>
+    <h1 style="margin-bottom: 20px;">Calendário</h1>
 
     <div class="list-toolbar">
       <select
@@ -35,7 +32,7 @@ function renderCalendar() {
       <div class="panel-title-row">
         <div>
           <h3 id="calendar-day-title"></h3>
-          <p>Jogos e provas programados</p>
+          <p style="padding-top: 10px;">Jogos e provas programados</p>
         </div>
         <span class="status-pill" id="calendar-event-count"></span>
       </div>

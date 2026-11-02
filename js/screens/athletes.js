@@ -1,10 +1,6 @@
 function renderAthletes() {
   pageContent.innerHTML = `
-    <p class="eyebrow">TALENTO EM CADA CAMPUS</p>
     <h1>Atletas</h1>
-    <p class="page-subtitle">
-      Conheça quem faz os jogos acontecerem. Cada história merece torcida.
-    </p>
 
     <div class="list-toolbar">
       <label class="search-box">

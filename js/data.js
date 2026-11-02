@@ -5,6 +5,7 @@ const athletes = [
     name: "Ana Clara Souza",
     campus: "Campus Camboriú",
     modality: "Voleibol",
+    naipe: "Feminino",
     position: "Ponteira",
     age: 17,
     height: "1,72 m",
@@ -18,6 +19,7 @@ const athletes = [
     name: "Lucas Martins",
     campus: "Campus Concórdia",
     modality: "Futsal",
+    naipe: "Masculino",
     position: "Pivô",
     age: 18,
     height: "1,80 m",
@@ -31,6 +33,7 @@ const athletes = [
     name: "Mariana Oliveira",
     campus: "Campus Rio do Sul",
     modality: "Atletismo",
+    naipe: "Feminino",
     position: "Meio-fundista",
     age: 16,
     height: "1,65 m",
@@ -44,6 +47,7 @@ const athletes = [
     name: "Pedro Henrique Lima",
     campus: "Campus Blumenau",
     modality: "Basquetebol",
+    naipe: "Masculino",
     position: "Armador",
     age: 17,
     height: "1,83 m",
@@ -57,6 +61,7 @@ const athletes = [
     name: "Beatriz Fernandes",
     campus: "Campus Araquari",
     modality: "Atletismo",
+    naipe: "Feminino",
     position: "Velocista",
     age: 16,
     height: "1,68 m",
@@ -70,6 +75,7 @@ const athletes = [
     name: "Rafael Costa",
     campus: "Campus São Bento do Sul",
     modality: "Futsal",
+    naipe: "Masculino",
     position: "Goleiro",
     age: 18,
     height: "1,87 m",
@@ -83,6 +89,7 @@ const athletes = [
     name: "Camila Rocha",
     campus: "Campus Brusque",
     modality: "Handebol",
+    naipe: "Feminino",
     position: "Ponta esquerda",
     age: 17,
     height: "1,66 m",
@@ -96,6 +103,7 @@ const athletes = [
     name: "João Pedro Alves",
     campus: "Campus Videira",
     modality: "Tênis de mesa",
+    naipe: "Masculino",
     position: "Individual",
     age: 16,
     height: "1,70 m",
@@ -109,6 +117,7 @@ const athletes = [
     name: "Isabela Mendes",
     campus: "Campus Ibirama",
     modality: "Xadrez",
+    naipe: "Feminino",
     position: "Individual",
     age: 17,
     height: "1,64 m",
@@ -122,6 +131,7 @@ const athletes = [
     name: "Matheus Ribeiro",
     campus: "Campus Luzerna",
     modality: "Basquetebol",
+    naipe: "Masculino",
     position: "Ala",
     age: 18,
     height: "1,79 m",
@@ -135,6 +145,7 @@ const athletes = [
     name: "Luana Martins",
     campus: "Campus Fraiburgo",
     modality: "Voleibol",
+    naipe: "Feminino",
     position: "Central",
     age: 16,
     height: "1,75 m",
@@ -148,6 +159,7 @@ const athletes = [
     name: "Gabriel Nunes",
     campus: "Campus Sombrio",
     modality: "Atletismo",
+    naipe: "Masculino",
     position: "Fundista",
     age: 17,
     height: "1,73 m",
@@ -161,6 +173,7 @@ const athletes = [
     name: "Marina Duarte",
     campus: "Campus Abelardo Luz",
     modality: "Futsal",
+    naipe: "Feminino",
     position: "Fixo",
     age: 18,
     height: "1,69 m",
@@ -174,6 +187,7 @@ const athletes = [
     name: "Enzo Carvalho",
     campus: "Campus Santa Rosa do Sul",
     modality: "Handebol",
+    naipe: "Masculino",
     position: "Goleiro",
     age: 17,
     height: "1,82 m",
@@ -187,6 +201,7 @@ const athletes = [
     name: "Sofia Teixeira",
     campus: "Campus São Francisco do Sul",
     modality: "Tênis de mesa",
+    naipe: "Feminino",
     position: "Duplas",
     age: 16,
     height: "1,62 m",
@@ -194,6 +209,71 @@ const athletes = [
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.mariana,
     marks: "Participação na categoria de duplas"
+  },
+  {
+    id: 16,
+    name: "André Luiz",
+    campus: "Campus Camboriú",
+    modality: "Voleibol",
+    naipe: "Masculino",
+    position: "Ponteiro",
+    age: 17,
+    height: "1,80 m",
+    stats: { points: 19 },
+    medal: "Bronze",
+    photo: MEDIA.images.athletes.lucas
+  },
+  {
+    id: 17,
+    name: "Júlia Ferreira",
+    campus: "Campus Blumenau",
+    modality: "Basquetebol",
+    naipe: "Feminino",
+    position: "Ala-armador",
+    age: 17,
+    height: "1,70 m",
+    stats: { points: 15, assists: 4 },
+    medal: "Sem medalha",
+    photo: MEDIA.images.athletes.beatriz
+  },
+  {
+    id: 18,
+    name: "Bruno Almeida",
+    campus: "Campus Concórdia",
+    modality: "Xadrez",
+    naipe: "Masculino",
+    position: "Individual",
+    age: 18,
+    height: "1,76 m",
+    stats: { wins: 3 },
+    medal: "Prata",
+    photo: MEDIA.images.athletes.rafael
+  },
+  {
+    id: 19,
+    name: "Larissa Monteiro",
+    campus: "Campus Araquari",
+    modality: "Vôlei de praia",
+    naipe: "Feminino",
+    position: "Defensor",
+    age: 17,
+    height: "1,68 m",
+    stats: { points: 12 },
+    medal: "Sem medalha",
+    photo: MEDIA.images.athletes.anaClara
+  },
+  {
+    id: 20,
+    name: "Davi Cardoso",
+    campus: "Campus Brusque",
+    modality: "Vôlei de praia",
+    naipe: "Masculino",
+    position: "Bloqueador",
+    age: 18,
+    height: "1,84 m",
+    stats: { points: 14 },
+    medal: "Sem medalha",
+    photo: MEDIA.images.athletes.lucas
   }
 ];
 
@@ -279,20 +359,20 @@ const modalityNameAliases = {
 };
 
 const medals = [
-  { name: "Campus Camboriú", code: "CA", gold: 12, silver: 8, bronze: 5 },
-  { name: "Campus Concórdia", code: "CO", gold: 10, silver: 9, bronze: 7 },
-  { name: "Campus Rio do Sul", code: "RS", gold: 8, silver: 10, bronze: 6 },
-  { name: "Campus Blumenau", code: "BL", gold: 7, silver: 5, bronze: 9 },
-  { name: "Campus Araquari", code: "AR", gold: 6, silver: 7, bronze: 5 },
-  { name: "Campus São Bento do Sul", code: "SB", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Brusque", code: "BR", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Videira", code: "VI", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Ibirama", code: "IB", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Luzerna", code: "LU", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Fraiburgo", code: "FR", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Sombrio", code: "SO", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Abelardo Luz", code: "AL", gold: 0, silver: 0, bronze: 0 },
-  { name: "Campus Santa Rosa do Sul", code: "SR", gold: 0, silver: 0, bronze: 0 },
+  { name: "Campus Camboriú", code: "CA", gold: 9, silver: 7, bronze: 5 },
+  { name: "Campus Concórdia", code: "CO", gold: 15, silver: 10, bronze: 8 },
+  { name: "Campus Rio do Sul", code: "RS", gold: 10, silver: 8, bronze: 7 },
+  { name: "Campus Blumenau", code: "BL", gold: 8, silver: 6, bronze: 6 },
+  { name: "Campus Araquari", code: "AR", gold: 7, silver: 5, bronze: 4 },
+  { name: "Campus São Bento do Sul", code: "SB", gold: 5, silver: 4, bronze: 4 },
+  { name: "Campus Brusque", code: "BR", gold: 4, silver: 3, bronze: 3 },
+  { name: "Campus Videira", code: "VI", gold: 3, silver: 3, bronze: 3 },
+  { name: "Campus Ibirama", code: "IB", gold: 3, silver: 2, bronze: 3 },
+  { name: "Campus Luzerna", code: "LU", gold: 2, silver: 3, bronze: 2 },
+  { name: "Campus Fraiburgo", code: "FR", gold: 2, silver: 2, bronze: 2 },
+  { name: "Campus Sombrio", code: "SO", gold: 2, silver: 1, bronze: 2 },
+  { name: "Campus Abelardo Luz", code: "AL", gold: 1, silver: 2, bronze: 1 },
+  { name: "Campus Santa Rosa do Sul", code: "SR", gold: 1, silver: 1, bronze: 1 },
   {
     name: "Campus São Francisco do Sul",
     code: "SF",
@@ -504,119 +584,119 @@ const campuses = [
     name: "Camboriú",
     code: "CA",
     desc: "Entre a natureza e a inovação, nosso campus joga junto e acolhe talentos.",
-    students: "3.240",
-    medals: 25,
+    athletes: 78,
+    medals: 21,
     image: MEDIA.images.campuses.camboriu
   },
   {
     name: "Concórdia",
     code: "CO",
     desc: "Tradição, dedicação e espírito de equipe que fazem história nos jogos.",
-    students: "2.890",
-    medals: 26,
+    athletes: 75,
+    medals: 33,
     image: MEDIA.images.campuses.concordia
   },
   {
     name: "Rio do Sul",
     code: "RS",
     desc: "Formando atletas e cidadãos com orgulho e paixão pelo esporte.",
-    students: "2.610",
-    medals: 24,
+    athletes: 72,
+    medals: 25,
     image: MEDIA.images.campuses.rioDoSul
   },
   {
     name: "Blumenau",
     code: "BL",
     desc: "Energia, diversidade e muita garra dentro e fora das quadras.",
-    students: "2.370",
-    medals: 21,
+    athletes: 68,
+    medals: 20,
     image: MEDIA.images.campuses.blumenau
   },
   {
     name: "Araquari",
     code: "AR",
     desc: "Uma comunidade que cresce, compete e celebra cada conquista.",
-    students: "1.840",
-    medals: 18,
+    athletes: 65,
+    medals: 16,
     image: MEDIA.images.campuses.araquari
   },
   {
     name: "São Bento do Sul",
     code: "SB",
     desc: "Trabalho em equipe e tradição esportiva na Serra Catarinense.",
-    students: "1.730",
-    medals: 14,
+    athletes: 63,
+    medals: 13,
     image: MEDIA.images.campuses.saoBentoDoSul
   },
   {
     name: "Brusque",
     code: "BR",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 61,
+    medals: 10,
     image: MEDIA.images.campuses.blumenau
   },
   {
     name: "Videira",
     code: "VI",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 60,
+    medals: 9,
     image: MEDIA.images.campuses.concordia
   },
   {
     name: "Ibirama",
     code: "IB",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 58,
+    medals: 8,
     image: MEDIA.images.campuses.rioDoSul
   },
   {
     name: "Luzerna",
     code: "LU",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 57,
+    medals: 7,
     image: MEDIA.images.campuses.araquari
   },
   {
     name: "Fraiburgo",
     code: "FR",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 55,
+    medals: 6,
     image: MEDIA.images.campuses.saoBentoDoSul
   },
   {
     name: "Sombrio",
     code: "SO",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 53,
+    medals: 5,
     image: MEDIA.images.campuses.blumenau
   },
   {
     name: "Abelardo Luz",
     code: "AL",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 50,
+    medals: 4,
     image: MEDIA.images.campuses.camboriu
   },
   {
     name: "Santa Rosa do Sul",
     code: "SR",
     desc: "Campus participante do JIFC.",
-    students: "—",
-    medals: 0,
+    athletes: 45,
+    medals: 3,
     image: MEDIA.images.campuses.concordia
   },
   {
     name: "São Francisco do Sul",
     code: "SF",
     desc: "Campus participante do JIFC.",
-    students: "—",
+    athletes: 40,
     medals: 0,
     image: MEDIA.images.campuses.rioDoSul
   }
@@ -746,24 +826,44 @@ function createDefaultFixtures() {
 
 const fixtures = createDefaultFixtures();
 
-const tournamentGroups = [
-  {
-    name: "Grupo A",
-    teams: ["Camboriú", "Araquari", "Videira", "Brusque"]
-  },
-  {
-    name: "Grupo B",
-    teams: ["Concórdia", "Ibirama", "Luzerna", "Fraiburgo"]
-  },
-  {
-    name: "Grupo C",
-    teams: ["Blumenau", "Sombrio", "Abelardo Luz", "Santa Rosa do Sul"]
-  },
-  {
-    name: "Grupo D",
-    teams: ["Rio do Sul", "São Bento do Sul", "São Francisco do Sul"]
-  }
-];
+const tournamentGroups = {
+  Masculino: [
+    {
+      name: "Grupo A",
+      teams: ["Camboriú", "Videira", "Sombrio", "Luzerna"]
+    },
+    {
+      name: "Grupo B",
+      teams: ["Concórdia", "Brusque", "São Francisco do Sul"]
+    },
+    {
+      name: "Grupo C",
+      teams: ["Rio do Sul", "Araquari", "Fraiburgo", "Santa Rosa do Sul"]
+    },
+    {
+      name: "Grupo D",
+      teams: ["Blumenau", "São Bento do Sul", "Ibirama", "Abelardo Luz"]
+    }
+  ],
+  Feminino: [
+    {
+      name: "Grupo A",
+      teams: ["Camboriú", "Concórdia", "Ibirama", "Fraiburgo"]
+    },
+    {
+      name: "Grupo B",
+      teams: ["Blumenau", "Brusque", "Videira", "São Bento do Sul"]
+    },
+    {
+      name: "Grupo C",
+      teams: ["Rio do Sul", "Luzerna", "Abelardo Luz", "São Francisco do Sul"]
+    },
+    {
+      name: "Grupo D",
+      teams: ["Araquari", "Sombrio", "Santa Rosa do Sul"]
+    }
+  ]
+};
 
 const pageNames = {
   inicio: "Visão geral",
@@ -779,6 +879,7 @@ const pageNames = {
 const pageContent = document.getElementById("page-content");
 
 let selectedModality = null;
+let selectedNaipe = "Masculino";
 let activeRole = null;
 let editorSection = "athletes";
 let selectedAthleteId = athletes[0].id;

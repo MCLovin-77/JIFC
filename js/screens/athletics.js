@@ -25,19 +25,10 @@ function renderAthletics() {
     .join("");
 
   pageContent.innerHTML = `
-    <p class="eyebrow">VELOCIDADE, TÉCNICA E SUPERAÇÃO</p>
     <h1>Atletismo</h1>
-    <p class="page-subtitle">
-      Cada centésimo conta. Acompanhe as provas e marcas que inspiram.
-    </p>
 
     <section class="detail-hero">
-      <p class="eyebrow">PROGRAMAÇÃO DE HOJE</p>
-      <h2>Na pista, todo mundo faz história.</h2>
-      <p>
-        Provas de pista e campo reúnem atletas de todo o IFC.
-        Confira as modalidades e os próximos desafios.
-      </p>
+      <p class="eyebrow">PROGRAMAÇÃO</p>
       <div class="detail-stats">
         <span><strong>124</strong><small>ATLETAS</small></span>
         <span><strong>12</strong><small>CAMPUS</small></span>
@@ -51,8 +42,7 @@ function renderAthletics() {
     <section class="panel">
       <div class="panel-title-row">
         <div>
-          <h3>Provas do atletismo</h3>
-          <p>Provas previstas para esta edição · JIFC 2025</p>
+          <h2>Provas do atletismo</h2>
         </div>
         <span class="status-pill">PISTA E CAMPO</span>
       </div>
@@ -74,8 +64,7 @@ function renderAthletics() {
 
     <div class="section-heading athletics-athletes-heading">
       <div>
-        <h2>Atletas da pista</h2>
-        <p>Destaques do atletismo nesta edição</p>
+        <h2>Destaques do atletismo nesta edição</h2>
       </div>
       <button class="section-link" data-page="atletas">
         Ver todos ${MEDIA.icons.rightArrow}
