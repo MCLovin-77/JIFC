@@ -81,7 +81,6 @@ function renderHome() {
         <table class="medal-table">
           <thead>
             <tr>
-              <th>#</th>
               <th>CAMPUS</th>
               <th>OURO</th>
               <th>PRATA</th>
