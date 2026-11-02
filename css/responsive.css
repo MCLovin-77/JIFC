@@ -1,0 +1,182 @@
+@media (min-width: 1500px) {
+  .page-content {
+    padding-top: 43px;
+  }
+}
+@media (max-width: 1100px) {
+  .sidebar {
+    width: 214px;
+  }
+  .main-content {
+    margin-left: 214px;
+  }
+  .page-content {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+  .hero {
+    grid-template-columns: 1fr .72fr;
+  }
+  .stats-grid {
+    gap: 9px;
+  }
+  .stat-card {
+    padding: 13px 11px;
+  }
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 780px) {
+  .sidebar {
+    bottom: auto;
+    height: auto;
+    padding: 13px 16px 0;
+    right: 0;
+    width: 100%;
+  }
+  .brand {
+    margin: 0 0 12px 3px;
+  }
+  .season-label, .sidebar-bottom, .nav-caption {
+    display: none;
+  }
+  .main-nav {
+    flex-direction: row;
+    gap: 1px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scrollbar-width: none;
+  }
+  .main-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .nav-link {
+    flex: 0 0 auto;
+    font-size: 10px;
+    gap: 6px;
+    padding: 8px 10px;
+    width: auto;
+  }
+  .nav-icon {
+    font-size: 14px;
+    height: 14px;
+    width: 14px;
+  }
+  .main-content {
+    margin-left: 0;
+    padding-top: 97px;
+  }
+  .topbar {
+    height: 49px;
+    padding: 0 18px;
+    top: 97px;
+  }
+  .page-content {
+    min-height: calc(100vh - 200px);
+    padding: 25px 18px 32px;
+  }
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .hero-copy {
+    padding: 26px 23px;
+  }
+  .hero-scene {
+    min-height: 143px;
+  }
+  .hero-upcoming {
+    margin: auto;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 23px;
+  }
+  .dashboard-grid, .home-bottom {
+    grid-template-columns: 1fr;
+  }
+  .site-footer {
+    flex-wrap: wrap;
+    gap: 9px 16px;
+    padding: 15px 18px;
+  }
+  .site-footer > span:nth-child(2) {
+    flex-basis: 100%;
+    order: 3;
+  }
+  .campus-banner {
+    padding: 20px;
+  }
+}
+@media (max-width: 480px) {
+  .edition-pill {
+    font-size: 9px;
+    padding: 7px 8px;
+  }
+  .theme-label {
+    display: none;
+  }
+  .topbar-actions {
+    gap: 11px;
+  }
+  .breadcrumb {
+    font-size: 10px;
+    gap: 7px;
+  }
+  .hero-actions {
+    gap: 12px;
+  }
+  .primary-button, .secondary-button {
+    font-size: 9px;
+    padding: 10px 11px;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+  .athlete-photo {
+    height: 220px;
+  }
+  .athlete-mini-list {
+    grid-template-columns: 1fr;
+  }
+  .list-toolbar {
+    flex-wrap: wrap;
+  }
+  .list-toolbar .search-box {
+    flex-basis: 100%;
+  }
+  .select-box {
+    flex: 1;
+  }
+  .campus-banner {
+    align-items: start;
+    flex-direction: column;
+    gap: 13px;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-field.full {
+    grid-column: auto;
+  }
+  .editor-form-grid, .demo-access-list {
+    grid-template-columns: 1fr;
+  }
+  .editor-panel {
+    padding: 17px;
+  }
+  .editor-actions .primary-button {
+    width: 100%;
+  }
+  .modal {
+    padding: 21px;
+  }
+}
+@media (max-width: 780px) {
+  .bracket-grid {
+    grid-template-columns: 1fr;
+  }
+  .group-grid {
+    grid-template-columns: 1fr;
+  }
+}

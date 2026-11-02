@@ -1,0 +1,382 @@
+.athlete-card, .modality-card, .campus-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.athlete-card:hover, .modality-card:hover, .campus-card:hover {
+  box-shadow: none;
+}
+.athlete-photo {
+  background: #e9eee9;
+  height: 173px;
+  object-fit: cover;
+  width: 100%;
+}
+.athlete-card-body {
+  padding: 13px;
+}
+.athlete-title-row {
+  align-items: start;
+  display: flex;
+  justify-content: space-between;
+}
+.athlete-title-row h3 {
+  font-size: 13px;
+  margin: 0;
+}
+.athlete-title-row p {
+  color: var(--muted);
+  font-size: 9px;
+  margin: 4px 0 0;
+}
+.position-pill {
+  background: #edf5ef;
+  border-radius: 12px;
+  color: #52745c;
+  font-size: 8px;
+  padding: 5px 7px;
+}
+.athlete-metrics {
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+}
+.athlete-metrics span {
+  color: var(--muted);
+  font-size: 8px;
+}
+.athlete-metrics strong {
+  color: var(--ink);
+  display: block;
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+.modality-card {
+  padding: 17px;
+}
+.modality-top {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+.modality-icon {
+  align-items: center;
+  background: #edf5ef;
+  border-radius: 9px;
+  color: var(--green);
+  display: flex;
+  font-size: 20px;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+.modality-card h3 {
+  font-size: 14px;
+  margin: 15px 0 5px;
+}
+.modality-card p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.modality-foot {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  color: #78857c;
+  display: flex;
+  font-size: 9px;
+  justify-content: space-between;
+  padding-top: 11px;
+}
+.modality-foot button {
+  background: transparent;
+  border: 0;
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 0;
+}
+.podium-wrap {
+  align-items: end;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 17px;
+  min-height: 210px;
+  padding: 24px 20px 15px;
+}
+.podium-place {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  max-width: 150px;
+}
+.podium-place img {
+  border: 3px solid white;
+  border-radius: 50%;
+  height: 47px;
+  object-fit: cover;
+  width: 47px;
+}
+.podium-place strong {
+  font-size: 10px;
+  margin-top: 7px;
+}
+.podium-place small {
+  color: var(--muted);
+  font-size: 8px;
+  margin: 3px 0 9px;
+}
+.podium-step {
+  align-items: center;
+  background: #d9e9dc;
+  border-radius: 4px 4px 0 0;
+  color: #416b4b;
+  display: flex;
+  font-size: 20px;
+  font-weight: 800;
+  height: 55px;
+  justify-content: center;
+  width: 100%;
+}
+.podium-place.first .podium-step {
+  background: #ddea88;
+  color: #4f6324;
+  height: 78px;
+}
+.podium-place.third .podium-step {
+  background: #e9dfd5;
+  color: #8e6850;
+  height: 43px;
+}
+.podium-number {
+  margin-top: 8px;
+}
+.event-card {
+  background: white;
+  border: 1px solid #edf0ec;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 14px;
+}
+.event-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+.event-day {
+  background: #f0f5ed;
+  border-radius: 7px;
+  min-width: 45px;
+  padding: 8px 4px;
+  text-align: center;
+}
+.event-day strong, .event-day small {
+  display: block;
+}
+.event-day strong {
+  font-size: 15px;
+}
+.event-day small {
+  color: #7b897e;
+  font-size: 8px;
+  margin-top: 2px;
+}
+.event-detail {
+  flex: 1;
+}
+.event-detail strong {
+  font-size: 11px;
+}
+.event-detail p {
+  color: var(--muted);
+  font-size: 9px;
+  margin: 4px 0 0;
+}
+.event-result {
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 700;
+}
+.campus-banner {
+  align-items: center;
+  background:
+    linear-gradient(100deg, rgba(18,59,43,.95), rgba(18,59,43,.72)),
+    var(--campus-banner-image) center / cover;
+  border-radius: 13px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  min-height: 145px;
+  padding: 24px 28px;
+}
+.campus-banner .eyebrow {
+  color: var(--lime);
+}
+.campus-banner h2 {
+  font-size: 25px;
+  letter-spacing: -.8px;
+  margin: 0 0 7px;
+}
+.campus-banner p {
+  color: #d1ded4;
+  font-size: 10px;
+  margin: 0;
+}
+.campus-card {
+  padding: 0;
+}
+.campus-cover {
+  background: #dce9df;
+  height: 100px;
+  object-fit: cover;
+  width: 100%;
+}
+.campus-card-body {
+  padding: 13px;
+}
+.campus-card-body h3 {
+  font-size: 12px;
+  margin: 0 0 5px;
+}
+.campus-card-body p {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.campus-facts {
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding-top: 9px;
+}
+.campus-facts span {
+  color: var(--muted);
+  font-size: 8px;
+}
+.campus-facts strong {
+  color: var(--ink);
+  display: block;
+  font-size: 11px;
+  margin-bottom: 2px;
+}
+.data-table-wrap {
+  background: white;
+  border: 1px solid #edf0ec;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+.data-table {
+  border-collapse: collapse;
+  min-width: 570px;
+  text-align: left;
+  width: 100%;
+}
+.data-table th {
+  background: #fafbf9;
+  color: #88938b;
+  font-size: 9px;
+  font-weight: 600;
+  padding: 12px 15px;
+}
+.data-table td {
+  border-top: 1px solid #f0f2ef;
+  font-size: 10px;
+  padding: 13px 15px;
+}
+.data-table td:first-child {
+  font-weight: 600;
+}
+.status-pill {
+  background: #eef5ef;
+  border-radius: 12px;
+  color: #507358;
+  display: inline-block;
+  font-size: 8px;
+  padding: 5px 8px;
+}
+.status-pill.scheduled {
+  background: #f3f2ed;
+  color: #867a61;
+}
+.detail-hero {
+  background:
+    linear-gradient(100deg, rgba(18,59,43,.94), rgba(18,59,43,.62)),
+    var(--modality-details-image) center / cover;
+  border-radius: 12px;
+  color: white;
+  margin: 18px 0;
+  padding: 25px;
+}
+.detail-hero h2 {
+  font-size: 25px;
+  margin: 0 0 8px;
+}
+.detail-hero p {
+  color: #d3dfd5;
+  font-size: 11px;
+  margin: 0;
+  max-width: 520px;
+}
+.detail-stats {
+  display: flex;
+  gap: 25px;
+  margin-top: 17px;
+}
+.detail-stats strong, .detail-stats small {
+  display: block;
+}
+.detail-stats strong {
+  font-size: 16px;
+}
+.detail-stats small {
+  color: #c0d0c4;
+  font-size: 8px;
+  margin-top: 3px;
+}
+.site-footer {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  color: #929c95;
+  display: flex;
+  font-size: 9px;
+  gap: 20px;
+  justify-content: space-between;
+  padding: 18px 5.1%;
+}
+.footer-logo {
+  color: var(--forest);
+  font-size: 16px;
+}
+.footer-heart {
+  color: #d0715d;
+}
+.empty-state {
+  background: white;
+  border: 1px dashed #dfe6df;
+  border-radius: 10px;
+  color: var(--muted);
+  grid-column: 1 / -1;
+  padding: 30px;
+  text-align: center;
+}
+.podium-table-panel {
+  margin-top: 17px;
+}
+.calendar-upcoming {
+  margin-top: 15px;
+}
+.athletics-athletes-heading {
+  margin-top: 25px;
+}

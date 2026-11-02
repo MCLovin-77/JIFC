@@ -1,0 +1,126 @@
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #e5ece6;
+  --muted: #a4b0a8;
+  --line: #34443a;
+  --paper: #151d18;
+  --white: #202b23;
+  --shadow: 0 14px 45px rgba(0, 0, 0, .24);
+}
+[data-theme="dark"] body {
+  background: var(--paper);
+  color: var(--ink);
+}
+[data-theme="dark"] .topbar {
+  background: rgba(27, 38, 31, .96);
+  border-color: #34443a;
+}
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .athlete-card,
+[data-theme="dark"] .modality-card,
+[data-theme="dark"] .campus-card,
+[data-theme="dark"] .data-table-wrap,
+[data-theme="dark"] .event-card,
+[data-theme="dark"] .modal {
+  background: #202b23;
+  border-color: #34443a;
+}
+[data-theme="dark"] .medal-table th,
+[data-theme="dark"] .data-table th {
+  background: #26332a;
+  color: #aab7ad;
+}
+[data-theme="dark"] .medal-table td,
+[data-theme="dark"] .data-table td,
+[data-theme="dark"] .athlete-metrics,
+[data-theme="dark"] .campus-facts,
+[data-theme="dark"] .site-footer {
+  border-color: #34443a;
+}
+[data-theme="dark"] .fixture,
+[data-theme="dark"] .athlete-mini {
+  border-color: #34443a;
+}
+[data-theme="dark"] .athlete-mini,
+[data-theme="dark"] .fixture-date,
+[data-theme="dark"] .event-day,
+[data-theme="dark"] .athlete-stat,
+[data-theme="dark"] .group-card,
+[data-theme="dark"] .bracket-round {
+  background: #26332a;
+  border-color: #3a4a3e;
+}
+[data-theme="dark"] .podium-wrap {
+  background: linear-gradient(145deg, #26332a, #202b23);
+  border-color: #34443a;
+}
+[data-theme="dark"] .empty-state {
+  background: #202b23;
+  border-color: #405145;
+  color: #c0cbc2;
+}
+[data-theme="dark"] .search-box,
+[data-theme="dark"] .select-box,
+[data-theme="dark"] .form-field input,
+[data-theme="dark"] .form-field select,
+[data-theme="dark"] .form-field textarea {
+  background: #1a241d;
+  border-color: #3a4a3e;
+  color: var(--ink);
+}
+[data-theme="dark"] .form-note {
+  background: #29382d;
+  color: #bdcbbf;
+}
+[data-theme="dark"] .bracket-match {
+  background: #202b23;
+  border-color: #3a4a3e;
+}
+[data-theme="dark"] .group-table td {
+  border-color: #3a4a3e;
+  color: #d0d9d1;
+}
+[data-theme="dark"] .theme-toggle {
+  background: #2a382e;
+  border-color: #405145;
+  color: #e0e9e1;
+}
+[data-theme="dark"] .theme-toggle:hover {
+  background: #34453a;
+}
+[data-theme="dark"] .top-avatar {
+  background: #dce8d9;
+  color: #183b29;
+}
+[data-theme="dark"] .notification-dot {
+  border-color: #1b261e;
+}
+[data-theme="dark"] .campus-mark {
+  background: #34483a;
+  color: #e1ebdf;
+}
+[data-theme="dark"] .site-footer {
+  color: #9eaba2;
+}
+[data-theme="dark"] .footer-logo {
+  color: #dce8dd;
+}
+[data-theme="dark"] .editor-panel .form-field input,
+[data-theme="dark"] .editor-panel .form-field select {
+  background: #1a241d;
+  border-color: #3a4a3e;
+  color: var(--ink);
+}
+[data-theme="dark"] .editor-panel .form-field label,
+[data-theme="dark"] .editor-checkboxes legend,
+[data-theme="dark"] .editor-checkbox-option,
+[data-theme="dark"] .editor-checkbox {
+  color: #bdcbbf;
+}
+[data-theme="dark"] .editor-tabs {
+  border-color: #34443a;
+}
+[data-theme="dark"] .demo-access-list .secondary-button span {
+  color: #bdcbbf;
+}
