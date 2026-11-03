@@ -17,9 +17,38 @@ function escapeHtml(value) {
 function normalizeAthlete(athlete) {
   const migratedAthlete = { ...athlete };
   const defaultAthlete = athletes.find(item => item.id === athlete.id);
+  const femininePositionForms = {
+    Armador: "Armadora",
+    "Ala-armador": "Ala-armadora",
+    Fixo: "Fixa",
+    Goleiro: "Goleira",
+    "Armador central": "Armadora central",
+    "Armador esquerdo": "Armadora esquerda",
+    "Armador direito": "Armadora direita",
+    Levantador: "Levantadora",
+    Ponteiro: "Ponteira",
+    Oposto: "Oposta",
+    Bloqueador: "Bloqueadora",
+    Defensor: "Defensora",
+    Saltador: "Saltadora",
+    Lançador: "Lançadora"
+  };
+  const masculinePositionForms = Object.fromEntries(
+    Object.entries(femininePositionForms).map(([masculine, feminine]) => [
+      feminine,
+      masculine
+    ])
+  );
+
   if (!["Masculino", "Feminino"].includes(migratedAthlete.naipe)) {
     migratedAthlete.naipe = defaultAthlete?.naipe || "Masculino";
   }
+  const positionForms =
+    migratedAthlete.naipe === "Feminino"
+      ? femininePositionForms
+      : masculinePositionForms;
+  migratedAthlete.position =
+    positionForms[migratedAthlete.position] || migratedAthlete.position;
   migratedAthlete.modality =
     modalityNameAliases[migratedAthlete.modality] ||
     migratedAthlete.modality;
@@ -157,6 +186,10 @@ function loadEditorData() {
           Object.prototype.hasOwnProperty.call(athlete, key)
         )
       ) ||
+        saved.athletes.some(
+          (athlete, index) =>
+            athlete.position !== restoredAthletes[index].position
+        ) ||
         saved.athletes.some(
           athlete =>
             !["Masculino", "Feminino"].includes(athlete.naipe)

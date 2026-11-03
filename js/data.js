@@ -12,7 +12,6 @@ const athletes = [
     stats: { points: 28 },
     medal: "Ouro",
     photo: MEDIA.images.athletes.anaClara,
-    marks: "Salto: 2,84 m · Saque: 82 km/h"
   },
   {
     id: 2,
@@ -26,7 +25,6 @@ const athletes = [
     stats: { goals: 14, assists: 6 },
     medal: "Ouro",
     photo: MEDIA.images.athletes.lucas,
-    marks: "Velocidade: 29 km/h · 14 gols"
   },
   {
     id: 3,
@@ -54,7 +52,6 @@ const athletes = [
     stats: { points: 18, assists: 9 },
     medal: "Bronze",
     photo: MEDIA.images.athletes.pedro,
-    marks: "18 pontos · 9 assistências"
   },
   {
     id: 5,
@@ -82,7 +79,6 @@ const athletes = [
     stats: { goals: 1, assists: 3 },
     medal: "Prata",
     photo: MEDIA.images.athletes.rafael,
-    marks: "12 defesas · 1 gol"
   },
   {
     id: 7,
@@ -96,7 +92,6 @@ const athletes = [
     stats: { goals: 8, assists: 4 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.beatriz,
-    marks: "Destaque nas partidas do campus"
   },
   {
     id: 8,
@@ -110,7 +105,6 @@ const athletes = [
     stats: { wins: 3 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.pedro,
-    marks: "Participação na categoria individual"
   },
   {
     id: 9,
@@ -124,7 +118,6 @@ const athletes = [
     stats: { wins: 2 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.mariana,
-    marks: "Participação na categoria individual"
   },
   {
     id: 10,
@@ -138,7 +131,6 @@ const athletes = [
     stats: { points: 12, assists: 5 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.lucas,
-    marks: "12 pontos · 5 assistências"
   },
   {
     id: 11,
@@ -152,7 +144,6 @@ const athletes = [
     stats: { points: 16 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.anaClara,
-    marks: "Destaque em bloqueios e ataques"
   },
   {
     id: 12,
@@ -166,21 +157,19 @@ const athletes = [
     stats: {},
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.rafael,
-    marks: "Participação nas provas de fundo"
-  },
+    marks: "5.000 m: 15min42s"},
   {
     id: 13,
     name: "Marina Duarte",
     campus: "Campus Abelardo Luz",
     modality: "Futsal",
     naipe: "Feminino",
-    position: "Fixo",
+    position: "Fixa",
     age: 18,
     height: "1,69 m",
     stats: { goals: 3, assists: 5 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.beatriz,
-    marks: "3 gols · 5 assistências"
   },
   {
     id: 14,
@@ -194,7 +183,6 @@ const athletes = [
     stats: { goals: 1, assists: 2 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.lucas,
-    marks: "Participação na equipe de handebol"
   },
   {
     id: 15,
@@ -208,7 +196,6 @@ const athletes = [
     stats: { wins: 2 },
     medal: "Sem medalha",
     photo: MEDIA.images.athletes.mariana,
-    marks: "Participação na categoria de duplas"
   },
   {
     id: 16,
@@ -229,7 +216,7 @@ const athletes = [
     campus: "Campus Blumenau",
     modality: "Basquetebol",
     naipe: "Feminino",
-    position: "Ala-armador",
+    position: "Ala-armadora",
     age: 17,
     height: "1,70 m",
     stats: { points: 15, assists: 4 },
@@ -255,7 +242,7 @@ const athletes = [
     campus: "Campus Araquari",
     modality: "Vôlei de praia",
     naipe: "Feminino",
-    position: "Defensor",
+    position: "Defensora",
     age: 17,
     height: "1,68 m",
     stats: { points: 12 },
@@ -283,15 +270,19 @@ const modalityRules = {
       "Velocista",
       "Meio-fundista",
       "Fundista",
-      "Saltador(a)",
-      "Lançador(a)"
+      "Saltador",
+      "Saltadora",
+      "Lançador",
+      "Lançadora"
     ],
     statistics: []
   },
   Basquetebol: {
     positions: [
       "Armador",
+      "Armadora",
       "Ala-armador",
+      "Ala-armadora",
       "Ala",
       "Ala-pivô",
       "Pivô"
@@ -307,7 +298,9 @@ const modalityRules = {
       "Ala direita",
       "Ala esquerda",
       "Fixo",
-      "Goleiro"
+      "Fixa",
+      "Goleiro",
+      "Goleira"
     ],
     statistics: [
       { key: "goals", label: "Gols" },
@@ -317,11 +310,15 @@ const modalityRules = {
   Handebol: {
     positions: [
       "Goleiro",
+      "Goleira",
       "Ponta esquerda",
       "Ponta direita",
       "Armador central",
+      "Armadora central",
       "Armador esquerdo",
+      "Armadora esquerda",
       "Armador direito",
+      "Armadora direita",
       "Pivô"
     ],
     statistics: [
@@ -332,15 +329,23 @@ const modalityRules = {
   Voleibol: {
     positions: [
       "Levantador",
+      "Levantadora",
       "Ponteiro",
+      "Ponteira",
       "Oposto",
+      "Oposta",
       "Central",
       "Líbero"
     ],
     statistics: [{ key: "points", label: "Pontos" }]
   },
   "Vôlei de praia": {
-    positions: ["Bloqueador", "Defensor"],
+    positions: [
+      "Bloqueador",
+      "Bloqueadora",
+      "Defensor",
+      "Defensora"
+    ],
     statistics: [{ key: "points", label: "Pontos" }]
   },
   "Tênis de mesa": {
@@ -482,8 +487,6 @@ const modalities = [
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
     submodalities: athleticsEvents,
-    icon: MEDIA.icons.athletics,
-    desc: "Velocidade, resistência e superação em cada passo.",
     athletes: 124,
     campus: 12,
     next: "Hoje · 14:00"
@@ -493,8 +496,6 @@ const modalities = [
     category: "coletiva",
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
-    icon: MEDIA.icons.basketball,
-    desc: "Jogo coletivo, estratégia e muita energia em quadra.",
     athletes: 96,
     campus: 10,
     next: "Hoje · 16:30"
@@ -504,8 +505,6 @@ const modalities = [
     category: "coletiva",
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
-    icon: MEDIA.icons.futsal,
-    desc: "Habilidade, velocidade e paixão por cada gol.",
     athletes: 184,
     campus: 12,
     next: "Hoje · 13:45"
@@ -515,8 +514,6 @@ const modalities = [
     category: "coletiva",
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
-    icon: MEDIA.icons.handball,
-    desc: "Potência e precisão no esporte de equipe.",
     athletes: 88,
     campus: 9,
     next: "Amanhã · 09:00"
@@ -526,8 +523,6 @@ const modalities = [
     category: "coletiva",
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
-    icon: MEDIA.icons.volleyball,
-    desc: "Agilidade, estratégia e trabalho em equipe na areia.",
     athletes: 0,
     campus: 0,
     next: "Hoje · 15:00"
@@ -537,8 +532,6 @@ const modalities = [
     category: "coletiva",
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
-    icon: MEDIA.icons.volleyball,
-    desc: "Trabalho em equipe que transforma cada ponto.",
     athletes: 112,
     campus: 11,
     next: "Hoje · 15:00"
@@ -560,8 +553,6 @@ const modalities = [
         status: "ativa"
       }
     ],
-    icon: MEDIA.icons.tableTennis,
-    desc: "Reflexo e estratégia em partidas eletrizantes.",
     athletes: 48,
     campus: 8,
     next: "Amanhã · 13:00"
@@ -571,8 +562,6 @@ const modalities = [
     category: "individual",
     naipes: ["Masculino", "Feminino"],
     status: "ativa",
-    icon: MEDIA.icons.chess,
-    desc: "Pensamento estratégico em cada movimento.",
     athletes: 36,
     campus: 7,
     next: "Hoje · 14:30"
@@ -583,7 +572,6 @@ const campuses = [
   {
     name: "Camboriú",
     code: "CA",
-    desc: "Entre a natureza e a inovação, nosso campus joga junto e acolhe talentos.",
     athletes: 78,
     medals: 21,
     image: MEDIA.images.campuses.camboriu
@@ -591,7 +579,6 @@ const campuses = [
   {
     name: "Concórdia",
     code: "CO",
-    desc: "Tradição, dedicação e espírito de equipe que fazem história nos jogos.",
     athletes: 75,
     medals: 33,
     image: MEDIA.images.campuses.concordia
@@ -599,7 +586,6 @@ const campuses = [
   {
     name: "Rio do Sul",
     code: "RS",
-    desc: "Formando atletas e cidadãos com orgulho e paixão pelo esporte.",
     athletes: 72,
     medals: 25,
     image: MEDIA.images.campuses.rioDoSul
@@ -607,7 +593,6 @@ const campuses = [
   {
     name: "Blumenau",
     code: "BL",
-    desc: "Energia, diversidade e muita garra dentro e fora das quadras.",
     athletes: 68,
     medals: 20,
     image: MEDIA.images.campuses.blumenau
@@ -615,7 +600,6 @@ const campuses = [
   {
     name: "Araquari",
     code: "AR",
-    desc: "Uma comunidade que cresce, compete e celebra cada conquista.",
     athletes: 65,
     medals: 16,
     image: MEDIA.images.campuses.araquari
@@ -623,7 +607,6 @@ const campuses = [
   {
     name: "São Bento do Sul",
     code: "SB",
-    desc: "Trabalho em equipe e tradição esportiva na Serra Catarinense.",
     athletes: 63,
     medals: 13,
     image: MEDIA.images.campuses.saoBentoDoSul
@@ -631,7 +614,6 @@ const campuses = [
   {
     name: "Brusque",
     code: "BR",
-    desc: "Campus participante do JIFC.",
     athletes: 61,
     medals: 10,
     image: MEDIA.images.campuses.blumenau
@@ -639,7 +621,6 @@ const campuses = [
   {
     name: "Videira",
     code: "VI",
-    desc: "Campus participante do JIFC.",
     athletes: 60,
     medals: 9,
     image: MEDIA.images.campuses.concordia
@@ -647,7 +628,6 @@ const campuses = [
   {
     name: "Ibirama",
     code: "IB",
-    desc: "Campus participante do JIFC.",
     athletes: 58,
     medals: 8,
     image: MEDIA.images.campuses.rioDoSul
@@ -655,7 +635,6 @@ const campuses = [
   {
     name: "Luzerna",
     code: "LU",
-    desc: "Campus participante do JIFC.",
     athletes: 57,
     medals: 7,
     image: MEDIA.images.campuses.araquari
@@ -663,7 +642,6 @@ const campuses = [
   {
     name: "Fraiburgo",
     code: "FR",
-    desc: "Campus participante do JIFC.",
     athletes: 55,
     medals: 6,
     image: MEDIA.images.campuses.saoBentoDoSul
@@ -671,7 +649,6 @@ const campuses = [
   {
     name: "Sombrio",
     code: "SO",
-    desc: "Campus participante do JIFC.",
     athletes: 53,
     medals: 5,
     image: MEDIA.images.campuses.blumenau
@@ -679,7 +656,6 @@ const campuses = [
   {
     name: "Abelardo Luz",
     code: "AL",
-    desc: "Campus participante do JIFC.",
     athletes: 50,
     medals: 4,
     image: MEDIA.images.campuses.camboriu
@@ -687,7 +663,6 @@ const campuses = [
   {
     name: "Santa Rosa do Sul",
     code: "SR",
-    desc: "Campus participante do JIFC.",
     athletes: 45,
     medals: 3,
     image: MEDIA.images.campuses.concordia
@@ -695,7 +670,6 @@ const campuses = [
   {
     name: "São Francisco do Sul",
     code: "SF",
-    desc: "Campus participante do JIFC.",
     athletes: 40,
     medals: 0,
     image: MEDIA.images.campuses.rioDoSul

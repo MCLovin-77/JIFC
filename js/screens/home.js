@@ -12,11 +12,9 @@ function renderHome() {
         <div class="hero-actions" style="margin-top: 50px;">
           <button class="primary-button" data-page="calendario">
             Explorar calendário
-            <span>${MEDIA.icons.rightArrow}</span>
           </button>
           <button class="secondary-button" data-page="modalidades">
             Conheça as modalidades
-            <span>${MEDIA.icons.arrow}</span>
           </button>
         </div>
       </div>
@@ -32,7 +30,6 @@ function renderHome() {
       <article class="stat-card">
         <div class="stat-top">
           Atletas inscritos
-          <span class="stat-icon">${MEDIA.icons.athlete}</span>
         </div>
         <div class="stat-value">
         900
@@ -41,7 +38,6 @@ function renderHome() {
       <article class="stat-card">
         <div class="stat-top">
           Campus participantes
-          <span class="stat-icon">${MEDIA.icons.campus}</span>
         </div>
         <div class="stat-value">
           ${campuses.length}
@@ -50,7 +46,6 @@ function renderHome() {
       <article class="stat-card">
         <div class="stat-top">
           Modalidades
-          <span class="stat-icon">${MEDIA.icons.modalities}</span>
         </div>
         <div class="stat-value">
           ${modalities.length}
@@ -59,7 +54,6 @@ function renderHome() {
       <article class="stat-card">
         <div class="stat-top">
           Jogos programados
-          <span class="stat-icon">${MEDIA.icons.calendar}</span>
         </div>
         <div class="stat-value">
           ${fixtures.length}
@@ -75,7 +69,7 @@ function renderHome() {
             <p>Classificação geral · JIFC 2025</p>
           </div>
           <button data-page="podios">
-            Ver classificação ${MEDIA.icons.rightArrow}
+            Ver classificação
           </button>
         </div>
         <table class="medal-table">
@@ -102,7 +96,7 @@ function renderHome() {
             </p>
           </div>
           <button data-page="calendario">
-            Ver agenda ${MEDIA.icons.rightArrow}
+            Ver agenda
           </button>
         </div>
         <div class="fixture-list">
@@ -122,7 +116,7 @@ function renderHome() {
             <h2>Atletas em destaque</h2>
           </div>
           <button data-page="atletas">
-            Ver atletas ${MEDIA.icons.rightArrow}
+            Ver atletas
           </button>
         </div>
         <div class="athlete-mini-list">
@@ -136,7 +130,7 @@ function renderHome() {
             <h2>Próximas disputas</h2>
           </div>
           <button data-page="calendario">
-            Ver agenda ${MEDIA.icons.rightArrow}
+            Ver agenda
           </button>
         </div>
         <div class="fixture-list">

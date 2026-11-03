@@ -63,17 +63,6 @@
   display: flex;
   justify-content: space-between;
 }
-.modality-icon {
-  align-items: center;
-  background: #edf5ef;
-  border-radius: 9px;
-  color: var(--green);
-  display: flex;
-  font-size: 20px;
-  height: 42px;
-  justify-content: center;
-  width: 42px;
-}
 .modality-card h3 {
   font-size: 14px;
   margin: 15px 0 5px;

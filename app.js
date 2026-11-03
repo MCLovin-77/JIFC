@@ -19,7 +19,6 @@ function setTheme(theme, persist = true) {
   toggle.setAttribute("aria-label", dark ? "Ativar modo claro" : "Ativar modo escuro");
   toggle.title = dark ? "Ativar modo claro" : "Ativar modo escuro";
   toggle.querySelector(".theme-label").textContent = dark ? "Modo claro" : "Modo escuro";
-  toggle.querySelector("[aria-hidden]").textContent = dark ? MEDIA.icons.sun : MEDIA.icons.moon;
   if (persist) {
     try {
       localStorage.setItem("ifc-theme", dark ? "dark" : "light");

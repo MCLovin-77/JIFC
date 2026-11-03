@@ -1,29 +1,4 @@
 function renderPodios() {
-  const podiumAthletes = [athletes[2], athletes[4], athletes[0]];
-  const podiumMarkup = podiumAthletes
-    .map((athlete, index) => {
-      const places = ["second", "first", "third"];
-      const times = ["12,48 s", "12,16 s", "12,71 s"];
-      const positions = [2, 1, 3];
-
-      return `
-        <div class="podium-place ${places[index]}">
-          <img
-            src="${escapeHtml(athlete.photo)}"
-            alt="Foto de ${escapeHtml(athlete.name)}"
-          />
-          <strong>${escapeHtml(athlete.name)}</strong>
-          <small>
-            ${escapeHtml(athlete.campus.replace("Campus ", ""))} ·
-            ${times[index]}
-          </small>
-          <div class="podium-step">
-            ${positions[index]}
-            ${index === 0 ? `<span class="podium-number"></span>` : ""}
-          </div>
-        </div>`;
-    })
-    .join("");
   const campusRows = rankedMedals()
     .map((campus, index) => {
       const total =
@@ -57,16 +32,7 @@ function renderPodios() {
       </select>
     </div>
 
-    <section class="panel">
-      <div class="panel-title-row">
-        <div>
-          <h3>Destaque do atletismo · 100 m rasos</h3>
-          <p>Final feminina · Pista central</p>
-        </div>
-        <span class="status-pill">FINALIZADO</span>
-      </div>
-      <div class="podium-wrap">${podiumMarkup}</div>
-    </section>
+    <div id="podium-event"></div>
 
     <section class="panel podium-table-panel">
       <div class="panel-title-row">
@@ -90,4 +56,80 @@ function renderPodios() {
         </table>
       </div>
     </section>`;
+
+  const filter = document.getElementById("podium-filter");
+  filter.addEventListener("change", () => {
+    renderPodiumEvent(filter.value);
+  });
+  renderPodiumEvent(filter.value);
+}
+
+function renderPodiumEvent(modalityName) {
+  const events = [
+    {
+      modality: "Atletismo",
+      title: "Pódio do atletismo",
+      campuses: ["Rio do Sul", "Sombrio", "Camboriú"],
+      results: ["", "", ""]
+    },
+    {
+      modality: "Basquetebol",
+      title: "Pódio de basquetebol",
+      campuses: ["Camboriú", "Sombrio", "Concórdia"],
+      results: ["", "", ""]
+    },
+    {
+      modality: "Handebol",
+      title: "Pódio de handebol",
+      campuses: ["Brusque", "Sombrio", "Camboriú"],
+      results: ["", "", ""]
+    }
+  ];
+  const selectedEvents = modalityName
+    ? events.filter(event => event.modality === modalityName)
+    : events;
+  const root = document.getElementById("podium-event");
+
+  if (!selectedEvents.length) {
+    root.innerHTML = `<section class="panel empty-state">
+      Não há pódio cadastrado para esta modalidade.
+    </section>`;
+    return;
+  }
+
+  const places = ["second", "first", "third"];
+  const positions = [2, 1, 3];
+  root.innerHTML = selectedEvents
+    .map(event => {
+      const podiumMarkup = event.campuses
+        .map(
+          (campus, index) => `
+            <div class="podium-place ${places[index]}">
+              <strong>Campus ${escapeHtml(campus)}</strong>
+              ${
+                event.results[index]
+                  ? `<small>${escapeHtml(event.results[index])}</small>`
+                  : ""
+              }
+              <div class="podium-step">${positions[index]}</div>
+            </div>`
+        )
+        .join("");
+      const headingTag =
+        event.modality === "Basquetebol" || event.modality === "Handebol" || event.modality === "Atletismo"
+          ? "h2"
+          : "h3";
+
+      return `
+        <section class="panel">
+          <div class="panel-title-row">
+            <div>
+              <${headingTag}>${escapeHtml(event.title)}</${headingTag}>
+              <p>${escapeHtml(event.modality)}</p>
+            </div>
+          </div>
+          <div class="podium-wrap">${podiumMarkup}</div>
+        </section>`;
+    })
+    .join("");
 }

@@ -18,10 +18,10 @@ build nem servidor local. As imagens de demonstração são carregadas do Unspla
 - `.vscode/settings.json`: configuração de aprovação automática dos comandos
   usados no terminal do VS Code.
 
-### Imagens e ícones
+### Imagens
 
-- `assets/media.js`: catálogo centralizado de imagens, ícones e aplicação dos
-  recursos visuais.
+- `assets/media.js`: catálogo centralizado de imagens e aplicação dos recursos
+  visuais.
 
 ### JavaScript compartilhado
 

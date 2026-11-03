@@ -22,31 +22,6 @@ const MEDIA = Object.freeze({
     },
     campusBanner: unsplashImage("photo-1562774053-701939374585", 1400, 85),
     modalityDetails: unsplashImage("photo-1461896836934-ffe607ba8211", 1200, 80)
-  },
-  icons: {
-    home: "⌂",
-    calendar: "▦",
-    athletics: "↗",
-    podium: "♜",
-    athlete: "♙",
-    campus: "⌖",
-    modalities: "◈",
-    spark: "✳",
-    arrow: "↗",
-    rightArrow: "→",
-    leftArrow: "←",
-    close: "×",
-    edit: "✎",
-    moon: "☾",
-    sun: "☀",
-    notifications: "♧",
-    search: "⌕",
-    basketball: "◉",
-    futsal: "◌",
-    handball: "◍",
-    volleyball: "◈",
-    tableTennis: "⊙",
-    chess: "♟"
   }
 });
 
@@ -59,11 +34,4 @@ function applyMediaAssets() {
     "--modality-details-image",
     `url("${MEDIA.images.modalityDetails}")`
   );
-  document.querySelectorAll("[data-icon]").forEach(element => {
-    const icon = MEDIA.icons[element.dataset.icon];
-    if (!icon) {
-      throw new Error(`Ícone não cadastrado: ${element.dataset.icon}`);
-    }
-    element.textContent = icon;
-  });
 }

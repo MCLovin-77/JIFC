@@ -81,6 +81,21 @@
   border-color: #3a4a3e;
   color: #d0d9d1;
 }
+[data-theme="dark"] .chess-standings .chess-qualified td {
+  background: #294733;
+  color: #e0f0e2;
+}
+[data-theme="dark"] .chess-standings .chess-qualified td:last-child {
+  color: #b6e3bd;
+}
+[data-theme="dark"] .athletics-heats {
+  background: #202b23;
+  border-color: #34443a;
+}
+[data-theme="dark"] .athletics-heat {
+  background: #26332a;
+  border-color: #3a4a3e;
+}
 [data-theme="dark"] .theme-toggle {
   background: #2a382e;
   border-color: #405145;

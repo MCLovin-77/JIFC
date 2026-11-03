@@ -57,7 +57,7 @@ function openAuth() {
       class="modal-close"
       type="button"
       aria-label="Fechar"
-    >${MEDIA.icons.close}</button>
+    >Fechar</button>
     <p class="eyebrow">JOGOS IFC · ÁREA RESTRITA</p>
     <h2>Acesso para edição</h2>
     <p class="modal-intro">
@@ -114,7 +114,7 @@ function openAuth() {
         não substituem um serviço seguro de login.
       </div>
       <button class="primary-button form-submit" type="submit">
-        Entrar <span>${MEDIA.icons.rightArrow}</span>
+        Entrar
       </button>
     </form>`);
 
@@ -163,7 +163,7 @@ function openAthlete(id) {
       class="modal-close"
       type="button"
       aria-label="Fechar"
-    >${MEDIA.icons.close}</button>
+    >Fechar</button>
     <img
       class="modal-photo"
       src="${escapeHtml(athlete.photo)}"
@@ -215,7 +215,7 @@ function openAthlete(id) {
         : ""
     }
     <button class="primary-button form-submit" data-open-auth="login">
-      Área do servidor · editar atleta ${MEDIA.icons.arrow}
+      Área do servidor · editar atleta
     </button>`);
 }
 

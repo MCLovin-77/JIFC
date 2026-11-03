@@ -33,14 +33,13 @@
 .modal-close {
   background: #f3f5f2;
   border: 0;
-  border-radius: 50%;
+  border-radius: 5px;
   color: #68756c;
-  font-size: 18px;
-  height: 29px;
+  font-size: 10px;
+  padding: 7px 9px;
   position: absolute;
   right: 16px;
   top: 15px;
-  width: 29px;
 }
 .modal h2 {
   font-size: 21px;
@@ -214,9 +213,6 @@
   padding: 8px 10px;
   white-space: nowrap;
 }
-.theme-toggle > span:first-child {
-  font-size: 14px;
-}
 .theme-toggle:hover {
   background: #e8efe7;
 }
@@ -246,6 +242,83 @@
 }
 .tournament-section {
   margin-top: 17px;
+}
+.disputes-heading {
+  font-size: 15px;
+  margin: 0 0 10px;
+}
+.detail-hero .disputes-individual-heading {
+  margin: 0 0 10px;
+}
+.chess-scoring-legend {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 0 0 12px;
+}
+.chess-standings .data-table {
+  min-width: 930px;
+}
+.chess-standings .chess-qualified td {
+  background: #e4f0e5;
+  color: #214b2e;
+  font-weight: 600;
+}
+.chess-standings .chess-qualified td:last-child {
+  color: #176232;
+}
+.table-tennis-group-note {
+  color: var(--muted);
+  font-size: 10px;
+  margin: -4px 0 12px;
+}
+.athletics-event-details summary {
+  color: var(--green);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+}
+.athletics-heats {
+  background: white;
+  border: 1px solid #edf0ec;
+  border-radius: 7px;
+  margin-top: 8px;
+  min-width: 220px;
+  padding: 10px;
+}
+.athletics-heats h3 {
+  font-size: 10px;
+  margin: 0 0 5px;
+}
+.athletics-heats p {
+  color: var(--muted);
+  font-size: 8px;
+  margin: 0 0 8px;
+}
+.athletics-heats-grid {
+  display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.athletics-heat {
+  background: #fafbf9;
+  border: 1px solid #edf0ec;
+  border-radius: 5px;
+  padding: 6px;
+}
+.athletics-final-heat {
+  grid-column: 1 / -1;
+}
+.athletics-heat strong,
+.athletics-heat span {
+  display: block;
+}
+.athletics-heat strong {
+  font-size: 8px;
+}
+.athletics-heat span {
+  color: var(--muted);
+  font-size: 7px;
+  margin-top: 3px;
 }
 .group-grid {
   display: grid;

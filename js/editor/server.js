@@ -100,7 +100,6 @@ function renderServerEditor() {
         <div class="editor-actions">
           <button class="primary-button" type="submit">
             Salvar dados do atleta
-            <span>${MEDIA.icons.rightArrow}</span>
           </button>
         </div>
       </form>

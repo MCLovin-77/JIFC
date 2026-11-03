@@ -110,18 +110,6 @@
   color: var(--muted);
   display: flex;
   font-size: 10px;
-  justify-content: space-between;
-}
-.stat-icon {
-  align-items: center;
-  background: #edf5ef;
-  border-radius: 6px;
-  color: var(--green);
-  display: inline-flex;
-  font-size: 15px;
-  height: 26px;
-  justify-content: center;
-  width: 26px;
 }
 .stat-value {
   font-size: 23px;

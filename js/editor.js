@@ -158,7 +158,6 @@ function updateEditorRoleControls() {
     accessLink.className = "nav-link";
     accessLink.dataset.editorLink = "true";
     accessLink.innerHTML = `
-      <span class="nav-icon">${MEDIA.icons.edit}</span>
       Minha área`;
     nav.appendChild(accessLink);
     accessLink.addEventListener("click", renderEditor);

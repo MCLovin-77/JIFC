@@ -4,7 +4,6 @@ function renderAthletes() {
 
     <div class="list-toolbar">
       <label class="search-box">
-        <span aria-hidden="true">${MEDIA.icons.search}</span>
         <input
           id="athlete-search"
           type="search"

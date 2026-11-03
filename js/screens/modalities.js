@@ -13,9 +13,6 @@ function modalityCards(items) {
       modality => `
         <article class="modality-card">
           <div class="modality-top">
-            <span class="modality-icon">
-              ${escapeHtml(modality.icon)}
-            </span>
             <span class="position-pill">JIFC 2025</span>
           </div>
           <h3>${escapeHtml(modality.name)}</h3>
@@ -35,7 +32,7 @@ function modalityCards(items) {
               ${escapeHtml(modality.campus)} campus
             </span>
             <button data-modality="${escapeHtml(modality.name)}">
-              Detalhes ${MEDIA.icons.arrow}
+              Detalhes
             </button>
           </div>
         </article>`

@@ -224,7 +224,6 @@ function renderAdminModalityForm() {
           modality.status,
           ["ativa", "inativa"]
         ),
-        editorField("Ícone", "icon", modality.icon),
         editorField("Descrição", "desc", modality.desc),
         editorField(
           "Quantidade de atletas",
@@ -361,7 +360,6 @@ function editorSubmitButton(label) {
     <div class="editor-actions">
       <button class="primary-button" type="submit">
         ${escapeHtml(label)}
-        <span>${MEDIA.icons.rightArrow}</span>
       </button>
     </div>`;
 }

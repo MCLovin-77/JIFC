@@ -28,7 +28,7 @@ function renderAthletics() {
     <h1>Atletismo</h1>
 
     <section class="detail-hero">
-      <p class="eyebrow">PROGRAMAÇÃO</p>
+      <p class="eyebrow" style="font-size: 20px">PROGRAMAÇÃO</p>
       <div class="detail-stats">
         <span><strong>124</strong><small>ATLETAS</small></span>
         <span><strong>12</strong><small>CAMPUS</small></span>
@@ -67,7 +67,7 @@ function renderAthletics() {
         <h2>Destaques do atletismo nesta edição</h2>
       </div>
       <button class="section-link" data-page="atletas">
-        Ver todos ${MEDIA.icons.rightArrow}
+        Ver todos
       </button>
     </div>
     <div class="card-grid">${featuredAthletes}</div>`;
