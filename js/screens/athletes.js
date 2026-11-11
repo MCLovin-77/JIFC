@@ -22,7 +22,9 @@ function renderAthletes() {
     </div>
 
     <div class="card-grid" id="athlete-grid">
-      ${athletes.map(athleteCard).join("")}
+      ${athletes.length
+        ? athletes.map(athleteCard).join("")
+        : `<div class="empty-state">Nenhum atleta cadastrado.</div>`}
     </div>`;
 
   document
@@ -52,7 +54,7 @@ function athleteCard(athlete) {
             <p>${escapeHtml(athlete.campus)}</p>
           </div>
           <span class="position-pill">
-            ${escapeHtml(athlete.modality)} ·
+            ${escapeHtml(athleteModalities(athlete).join(", "))} ·
             ${escapeHtml(athlete.position)}
           </span>
         </div>
@@ -77,11 +79,11 @@ function filterAthletes() {
   const selectedModality = document.getElementById("athlete-filter").value;
   const filteredAthletes = athletes.filter(athlete => {
     const searchableText =
-      `${athlete.name} ${athlete.campus} ${athlete.modality}`
+      `${athlete.name} ${athlete.campus} ${athleteModalities(athlete).join(" ")}`
         .toLocaleLowerCase("pt-BR");
     const matchesQuery = searchableText.includes(query);
     const matchesModality =
-      !selectedModality || athlete.modality === selectedModality;
+      !selectedModality || athleteHasModality(athlete, selectedModality);
 
     return matchesQuery && matchesModality;
   });

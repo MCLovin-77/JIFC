@@ -141,6 +141,22 @@
 [data-theme="dark"] .editor-tabs {
   border-color: #34443a;
 }
+[data-theme="dark"] .access-status {
+  background: #29382d;
+}
+[data-theme="dark"] .access-status.pending {
+  border-left: 3px solid #d5bd71;
+}
+[data-theme="dark"] .access-card-centered .text-button {
+  color: #b7d99d;
+}
+[data-theme="dark"] .access-request-card {
+  border-color: #3a4a3e;
+}
+[data-theme="dark"] .status-pill.rejected {
+  background: #4a302c;
+  color: #f0b5aa;
+}
 [data-theme="dark"] .demo-access-list .secondary-button span {
   color: #bdcbbf;
 }

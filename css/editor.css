@@ -493,6 +493,114 @@
 .editor-panel {
   padding: 23px;
 }
+.access-portal {
+  margin: 0 auto;
+  max-width: 1040px;
+}
+.access-card {
+  padding: 23px;
+}
+.access-card-centered {
+  margin: 0 auto;
+  max-width: 500px;
+}
+.access-card-centered h1 {
+  font-size: 24px;
+  margin: 3px 0 8px;
+}
+.access-form-fields {
+  display: grid;
+  gap: 13px;
+  margin-top: 20px;
+}
+.access-card-centered .form-submit {
+  margin-top: 18px;
+}
+.access-request-link,
+.access-back {
+  display: block;
+  margin: 18px auto 0;
+  text-align: center;
+}
+.access-card-centered .text-button {
+  color: var(--green);
+  font-size: 11px;
+}
+.access-card-centered .text-button:hover {
+  text-decoration: underline;
+}
+.access-card h2 {
+  font-size: 18px;
+  margin: 16px 0 8px;
+}
+.access-card > .primary-button {
+  margin-top: 10px;
+}
+.access-status {
+  align-items: flex-start;
+  background: #f2f6ee;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 14px;
+}
+.access-status span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.access-status.approved {
+  border-left: 3px solid var(--green);
+}
+.access-status.rejected {
+  border-left: 3px solid #b75a4c;
+}
+.access-request-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+.access-request-card {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 16px;
+}
+.access-request-heading {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+}
+.access-request-heading h4 {
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+.access-request-heading > div > span {
+  color: var(--muted);
+  font-size: 10px;
+}
+.access-request-details {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 16px 0;
+}
+.access-request-details dt {
+  color: var(--muted);
+  font-size: 9px;
+}
+.access-request-details dd {
+  font-size: 11px;
+  margin: 3px 0 0;
+  overflow-wrap: anywhere;
+}
+.access-request-card .editor-actions {
+  justify-content: flex-start;
+}
+.status-pill.rejected {
+  background: #f7e9e6;
+  color: #95473c;
+}
 .editor-panel > .form-field {
   margin: 16px 0;
   max-width: 540px;

@@ -47,9 +47,9 @@ document.addEventListener("click", event => {
     renderPage(pageButton.dataset.page);
     return;
   }
-  const authButton = event.target.closest("[data-open-auth]");
-  if (authButton) {
-    openAuth();
+  const editorButton = event.target.closest("[data-open-editor]");
+  if (editorButton) {
+    openEditor();
     return;
   }
   const athlete = event.target.closest("[data-athlete]");

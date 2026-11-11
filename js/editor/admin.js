@@ -3,13 +3,22 @@ const adminSections = [
   ["athletes", "Atletas"],
   ["schedule", "Horários"],
   ["modalities", "Modalidades"],
-  ["medals", "Estatísticas"],
+  ["medals", "Medalhas"],
+  ["podiums", "Pódios"],
   ["campuses", "Campus"],
-  ["events", "Provas"]
+  ["events", "Provas"],
+  ["accesses", "Solicitações"]
 ];
 
 function renderAdminEditor() {
-  const tabs = adminSections
+  const visibleSections =
+    activeRole === "admin"
+      ? adminSections
+      : adminSections.filter(([key]) => isEditorSectionAllowed(key));
+  if (!visibleSections.some(([key]) => key === editorSection)) {
+    editorSection = visibleSections[0]?.[0] || "schedule";
+  }
+  const tabs = visibleSections
     .map(
       ([key, label]) => `
         <button
@@ -24,36 +33,29 @@ function renderAdminEditor() {
   );
   const sectionLabel = selectedSection?.[1] || "Edição";
   const content = renderAdminSection(editorSection);
+  const roleLabel = activeRole === "admin" ? "Admin" : "Servidor";
 
   pageContent.innerHTML = `
     <div class="editor-session-row">
-      <span>Perfil: administrador</span>
       <button
         type="button"
         class="secondary-button"
         data-editor-logout
       >Sair</button>
     </div>
-    <p class="eyebrow">ÁREA RESTRITA · ADMINISTRADOR</p>
-    <h1>Painel de edição</h1>
-    <p class="page-subtitle">
-      Edite atletas, resultados, modalidades, agenda e informações dos campus.
-    </p>
+    <h1>Painel ${roleLabel.toLowerCase()}</h1>
 
     <div class="editor-tabs" role="tablist">${tabs}</div>
     <section class="panel editor-panel">
       <div class="panel-title-row">
         <div>
           <h3>${escapeHtml(sectionLabel)}</h3>
-          <p>As alterações atualizam as telas públicas deste protótipo.</p>
         </div>
-        <span class="status-pill">ADMINISTRADOR</span>
+        <span class="status-pill">EDIÇÃO</span>
       </div>
       ${content}
     </section>
-    <div class="form-note">
-      Alterações são guardadas neste navegador para demonstração.
-    </div>`;
+    `;
 
   bindAdminSelectors();
 }
@@ -64,8 +66,10 @@ function renderAdminSection(section) {
     schedule: renderAdminScheduleForm,
     modalities: renderAdminModalityForm,
     medals: renderAdminMedalForm,
+    podiums: renderAdminPodiumForm,
     campuses: renderAdminCampusForm,
-    events: renderAdminEventForm
+    events: renderAdminEventForm,
+    accesses: renderAccessRequests
   };
   const renderSection = renderers[section];
 
@@ -74,24 +78,152 @@ function renderAdminSection(section) {
     : `<div class="empty-state">Seção de edição não encontrada.</div>`;
 }
 
-function renderAdminAthleteForm() {
-  const athlete = athletes[selectedAdminAthleteIndex] || athletes[0];
-  if (!athlete) {
-    return `<div class="empty-state">Nenhum atleta cadastrado.</div>`;
+function renderAccessRequests() {
+  if (!accessRequests.length) {
+    return `<div class="empty-state">
+      Nenhuma solicitação recebida. Os pedidos enviados pela tela de acesso
+      aparecerão aqui para análise.
+    </div>`;
   }
 
+  const statusLabels = {
+    pending: "Pendente",
+    approved: "Aprovada",
+    rejected: "Recusada"
+  };
   return `
-    ${editorPicker(
-      "admin-athlete",
-      "Atleta",
-      athletes,
-      selectedAdminAthleteIndex,
-      item => item.name
-    )}
+    <div class="access-request-list">
+      ${accessRequests
+        .map(request => {
+          const date = request.createdAt
+            ? new Date(request.createdAt).toLocaleDateString("pt-BR")
+            : "—";
+          return `
+            <article class="access-request-card">
+              <div class="access-request-heading">
+                <div>
+                  <h4>${escapeHtml(request.name)}</h4>
+                  <span>${escapeHtml(statusLabels[request.status] || "Pendente")}</span>
+                </div>
+                <span class="status-pill ${
+                  request.status === "approved"
+                    ? ""
+                    : request.status === "rejected"
+                      ? "rejected"
+                      : "scheduled"
+                }">${escapeHtml(request.status)}</span>
+              </div>
+              <dl class="access-request-details">
+                <div><dt>E-mail institucional</dt><dd>${escapeHtml(request.email)}</dd></div>
+                <div><dt>Campus</dt><dd>${escapeHtml(request.campus)}</dd></div>
+                <div><dt>Atuação</dt><dd>${escapeHtml(request.position)}</dd></div>
+                <div><dt>Solicitado em</dt><dd>${escapeHtml(date)}</dd></div>
+              </dl>
+              <div class="editor-actions">
+                ${
+                  request.status === "pending"
+                    ? `<button
+                        type="button"
+                        class="primary-button"
+                        data-access-request-action="approve"
+                        data-request-id="${escapeHtml(request.id)}"
+                      >Aprovar acesso</button>
+                      <button
+                        type="button"
+                        class="secondary-button"
+                        data-access-request-action="reject"
+                        data-request-id="${escapeHtml(request.id)}"
+                      >Recusar</button>`
+                    : ""
+                }
+              </div>
+            </article>`;
+        })
+        .join("")}
+    </div>`;
+}
+
+function renderAdminAthleteForm() {
+  const isServer = activeRole === "server";
+  if (isServer && !isServerAccessApproved()) {
+    return `<div class="empty-state">A solicitação de acesso não está aprovada.</div>`;
+  }
+
+  const serverAthleteIndexes = isServer ? getServerAthleteIndexes() : [];
+  if (isServer && !serverAthleteIndexes.length) {
+    return `<div class="empty-state">
+      Nenhum atleta deste campus está cadastrado. O admin precisa cadastrar
+      atletas vinculados ao campus antes que possam ser atualizados.
+    </div>`;
+  }
+
+  if (
+    isServer &&
+    !serverAthleteIndexes.includes(selectedAdminAthleteIndex)
+  ) {
+    selectedAdminAthleteIndex = serverAthleteIndexes[0];
+  }
+  const isNew = !athletes[selectedAdminAthleteIndex];
+  const athlete =
+    athletes[selectedAdminAthleteIndex] || {
+      name: "",
+      campus: "",
+      modality: modalities[0]?.name || "",
+      naipe: "Masculino",
+      position: modalityRules[modalities[0]?.name]?.positions[0] || "",
+      age: "",
+      height: "",
+      medal: "Sem medalha",
+      marks: "",
+      photo: "",
+      stats: {}
+    };
+  return `
+    ${
+      isServer
+        ? `<div class="form-field">
+            <label for="admin-athlete">Atleta do campus</label>
+            <select id="admin-athlete">
+              ${serverAthleteIndexes
+                .map(index => `
+                  <option value="${index}" ${
+                    index === selectedAdminAthleteIndex ? "selected" : ""
+                  }>${escapeHtml(athletes[index].name)}</option>`)
+                .join("")}
+            </select>
+          </div>`
+        : athletes.length && !isNew
+          ? editorPicker(
+              "admin-athlete",
+              "Atleta",
+              athletes,
+              selectedAdminAthleteIndex,
+              item => item.name
+            )
+          : ""
+    }
+    ${
+      isServer
+        ? ""
+        : editorNewButton(
+            isNew && athletes.length ? "cancel-athlete" : "athlete",
+            isNew && athletes.length ? "Cancelar novo atleta" : "Novo atleta"
+          )
+    }
     <form data-editor-form="admin-athlete">
       ${editorGrid([
-        editorField("Nome", "name", athlete.name),
-        editorField("Campus", "campus", athlete.campus),
+        editorField("Nome", "name", athlete.name, "text", "required"),
+        isServer
+          ? `<div class="form-field">
+              <label for="edit-campus-readonly">Campus vinculado</label>
+              <input
+                id="edit-campus-readonly"
+                type="text"
+                value="${escapeHtml(athlete.campus)}"
+                disabled
+              />
+            </div>`
+          : editorField("Campus", "campus", athlete.campus, "text", "required"),
         editorSelect(
           "Modalidade",
           "modality",
@@ -105,7 +237,7 @@ function renderAdminAthleteForm() {
           ["Masculino", "Feminino"]
         ),
         editorSelect(
-          "Posição",
+          "Posição / tipo",
           "position",
           athlete.position,
           modalityRules[athlete.modality]?.positions || []
@@ -130,20 +262,35 @@ function renderAdminAthleteForm() {
       <div id="admin-athlete-stats">
         ${renderAthleteStatisticsFields(athlete)}
       </div>
-      <p class="form-note">
-        Posições e estatísticas disponíveis variam conforme a modalidade.
-      </p>
+      <div id="admin-athlete-athletics-submodalities">
+        ${renderAthleticsSubmodalityFields(
+          [athlete.modality],
+          athlete.athleticsSubmodalities || []
+        )}
+      </div>
       ${editorSubmitButton("Salvar atleta")}
     </form>`;
+}
+
+function renderAthleticsSubmodalityFields(selectedModalities, selectedEvents) {
+  if (!selectedModalities.includes("Atletismo")) return "";
+
+  return `
+    <div class="athletics-submodality-fields">
+      ${editorCheckboxes(
+        "Provas do Atletismo (máximo de 3)",
+        "athleticsSubmodalities",
+        athleticsEvents.map(event => event.name),
+        selectedEvents
+      )}
+    </div>`;
 }
 
 function renderAthleteStatisticsFields(athlete) {
   const statistics = modalityRules[athlete.modality]?.statistics || [];
 
   if (!statistics.length) {
-    return `<p class="form-note">
-      Esta modalidade registra marcas e resultados no campo correspondente.
-    </p>`;
+    return "";
   }
 
   return editorGrid(
@@ -160,31 +307,46 @@ function renderAthleteStatisticsFields(athlete) {
 }
 
 function renderAdminScheduleForm() {
-  const fixture = fixtures[selectedFixtureIndex] || fixtures[0];
-  if (!fixture) {
-    return `<div class="empty-state">Nenhum horário cadastrado.</div>`;
-  }
+  const isNew = !fixtures[selectedFixtureIndex];
+  const fixture = fixtures[selectedFixtureIndex] || {
+    day: "",
+    month: "",
+    title: "",
+    meta: "",
+    modality: modalities[0]?.name || "",
+    tag: "",
+    score: ""
+  };
 
   return `
-    ${editorPicker(
-      "admin-fixture",
-      "Evento",
-      fixtures,
-      selectedFixtureIndex,
-      item => item.title
+    ${fixtures.length && !isNew
+      ? editorPicker(
+          "admin-fixture",
+          "Evento",
+          fixtures,
+          selectedFixtureIndex,
+          item => item.title
+        )
+      : ""}
+    ${editorNewButton(
+      isNew && fixtures.length ? "cancel-fixture" : "fixture",
+      isNew && fixtures.length ? "Cancelar novo jogo" : "Novo jogo"
     )}
     <form data-editor-form="admin-fixture">
       ${editorGrid([
-        editorField("Dia", "day", fixture.day, "number", "readonly"),
-        editorField("Mês", "month", fixture.month),
-        editorField("Confronto / evento", "title", fixture.title),
+        editorField("Dia", "day", fixture.day, "number", 'min="1" required'),
+        editorField("Mês", "month", fixture.month, "text", "required"),
+        editorField("Confronto / evento", "title", fixture.title, "text", "required"),
+        editorSelect(
+          "Modalidade",
+          "modality",
+          fixture.modality,
+          modalities.map(item => item.name)
+        ),
         editorField("Modalidade e local", "meta", fixture.meta),
         editorField("Horário / situação", "tag", fixture.tag),
         editorField("Placar / resultado", "score", fixture.score || "")
       ])}
-      <p class="form-note">
-        O dia é fixo para manter duas disputas por modalidade em cada data.
-      </p>
       ${editorSubmitButton("Salvar programação")}
     </form>`;
 }
@@ -246,23 +408,33 @@ function renderAdminModalityForm() {
 }
 
 function renderAdminMedalForm() {
-  const medal = medals[selectedMedalIndex] || medals[0];
-  if (!medal) {
-    return `<div class="empty-state">Nenhuma estatística cadastrada.</div>`;
-  }
+  const isNew = !medals[selectedMedalIndex];
+  const medal = medals[selectedMedalIndex] || {
+    name: "",
+    code: "",
+    gold: 0,
+    silver: 0,
+    bronze: 0
+  };
 
   return `
-    ${editorPicker(
-      "admin-medal",
-      "Campus",
-      medals,
-      selectedMedalIndex,
-      item => item.name
+    ${medals.length && !isNew
+      ? editorPicker(
+          "admin-medal",
+          "Campus",
+          medals,
+          selectedMedalIndex,
+          item => item.name
+        )
+      : ""}
+    ${editorNewButton(
+      isNew && medals.length ? "cancel-medal" : "medal",
+      isNew && medals.length ? "Cancelar novo quadro" : "Novo quadro de medalhas"
     )}
     <form data-editor-form="admin-medal">
       ${editorGrid([
-        editorField("Campus", "name", medal.name),
-        editorField("Sigla", "code", medal.code),
+        editorField("Campus", "name", medal.name, "text", "required"),
+        editorField("Sigla", "code", medal.code, "text", "required"),
         editorField("Medalhas de ouro", "gold", medal.gold, "number", 'min="0"'),
         editorField(
           "Medalhas de prata",
@@ -279,44 +451,94 @@ function renderAdminMedalForm() {
           'min="0"'
         )
       ])}
-      <p class="form-note">
-        Selecione um campus existente e edite seus totais;
-        não é necessário cadastrar o campus novamente.
-      </p>
       ${editorSubmitButton("Salvar estatísticas")}
     </form>`;
 }
 
 function renderAdminCampusForm() {
-  const campus = campuses[selectedCampusIndex] || campuses[0];
-  if (!campus) {
-    return `<div class="empty-state">Nenhum campus cadastrado.</div>`;
-  }
+  const isNew = !campuses[selectedCampusIndex];
+  const campus = campuses[selectedCampusIndex] || {
+    name: "",
+    code: "",
+    medals: 0,
+    athletes: 0,
+  };
 
   return `
-    ${editorPicker(
-      "admin-campus",
-      "Campus",
-      campuses,
-      selectedCampusIndex,
-      item => item.name
+    ${campuses.length && !isNew
+      ? editorPicker(
+          "admin-campus",
+          "Campus",
+          campuses,
+          selectedCampusIndex,
+          item => item.name
+        )
+      : ""}
+    ${editorNewButton(
+      isNew && campuses.length ? "cancel-campus" : "campus",
+      isNew && campuses.length ? "Cancelar novo campus" : "Novo campus"
     )}
     <form data-editor-form="admin-campus">
       ${editorGrid([
-        editorField("Nome", "name", campus.name),
-        editorField("Sigla", "code", campus.code),
-        editorField("Descrição", "desc", campus.desc),
+        editorField("Nome", "name", campus.name, "text", "required"),
+        editorField("Sigla", "code", campus.code, "text", "required"),
         editorField(
-          "Quantidade de atletas",
-          "athletes",
-          campus.athletes
+          "Número de medalhas",
+          "medals",
+          medalTotalForCampus(campus),
+          "number",
+          'min="0"'
         ),
-        editorField("Imagem (URL)", "image", campus.image, "url")
+        editorField(
+          "Total de estudantes",
+          "athletes",
+          campus.athletes,
+          "number",
+          'min="0"'
+        )
       ])}
-      <p class="form-note">
-        As medalhas deste campus são editadas na aba Estatísticas.
-      </p>
       ${editorSubmitButton("Salvar campus")}
+    </form>`;
+}
+
+function renderAdminPodiumForm() {
+  const isNew = !podiums[selectedPodiumIndex];
+  const podium = podiums[selectedPodiumIndex] || {
+    title: "",
+    modality: modalities[0]?.name || "",
+    first: "",
+    second: "",
+    third: ""
+  };
+
+  return `
+    ${podiums.length && !isNew
+      ? editorPicker(
+          "admin-podium",
+          "Pódio",
+          podiums,
+          selectedPodiumIndex,
+          item => item.title
+        )
+      : ""}
+    ${editorNewButton(
+      isNew && podiums.length ? "cancel-podium" : "podium",
+      isNew && podiums.length ? "Cancelar novo pódio" : "Novo pódio"
+    )}
+    <form data-editor-form="admin-podium">
+      ${editorGrid([
+        editorField("Título do resultado", "title", podium.title, "text", "required"),
+        editorSelect(
+          "Modalidade",
+          "modality",
+          podium.modality,
+          modalities.map(item => item.name)
+        ),
+        editorField("1º lugar", "first", podium.first, "text", "required"),
+        editorField("2º lugar", "second", podium.second, "text", "required"),
+        editorField("3º lugar", "third", podium.third, "text", "required")
+      ])}
+      ${editorSubmitButton("Salvar pódio")}
     </form>`;
 }
 
@@ -364,6 +586,17 @@ function editorSubmitButton(label) {
     </div>`;
 }
 
+function editorNewButton(type, label) {
+  return `
+    <div class="editor-actions">
+      <button
+        class="secondary-button"
+        type="button"
+        data-editor-new="${type}"
+      >${escapeHtml(label)}</button>
+    </div>`;
+}
+
 function bindAdminSelectors() {
   const selectors = [
     ["admin-athlete", value => {
@@ -377,6 +610,9 @@ function bindAdminSelectors() {
     }],
     ["admin-medal", value => {
       selectedMedalIndex = Number(value);
+    }],
+    ["admin-podium", value => {
+      selectedPodiumIndex = Number(value);
     }],
     ["admin-campus", value => {
       selectedCampusIndex = Number(value);
@@ -403,7 +639,9 @@ function bindAdminSelectors() {
       const positionSelect = document.getElementById("edit-position");
       const statsContainer = document.getElementById("admin-athlete-stats");
 
-      positionSelect.innerHTML = rule.positions
+      if (!positionSelect || !statsContainer) return;
+
+      positionSelect.innerHTML = (rule?.positions || [])
         .map(
           position =>
             `<option value="${escapeHtml(position)}">${escapeHtml(position)}</option>`
@@ -413,6 +651,72 @@ function bindAdminSelectors() {
         modality: event.target.value,
         stats: {}
       });
+      updateAthleticsSubmodalityFields();
     });
   }
+
+  const athleteForm = document.querySelector(
+    '[data-editor-form="admin-athlete"]'
+  );
+  if (athleteForm) {
+    const modalitySelect = athleteForm.querySelector('[name="modality"]');
+    athleteForm.addEventListener("change", event => {
+      if (event.target === modalitySelect) {
+        updateAthletePositionAndStats();
+      }
+
+      if (event.target.name === "athleticsSubmodalities" && event.target.checked) {
+        const selected = [
+          ...athleteForm.querySelectorAll(
+            'input[name="athleticsSubmodalities"]:checked'
+          )
+        ];
+        if (selected.length > 3) {
+          event.target.checked = false;
+          showToast("Selecione no máximo 3 provas de Atletismo.", true);
+        }
+      }
+    });
+  }
+}
+
+function updateAthleticsSubmodalityFields() {
+  const form = document.querySelector('[data-editor-form="admin-athlete"]');
+  const container = document.getElementById("admin-athlete-athletics-submodalities");
+  if (!form || !container) return;
+
+  const selectedEvents = [
+    ...form.querySelectorAll(
+      'input[name="athleticsSubmodalities"]:checked'
+    )
+  ].map(input => input.value);
+  container.innerHTML = renderAthleticsSubmodalityFields(
+    [form.querySelector('[name="modality"]').value],
+    selectedEvents
+  );
+}
+
+function updateAthletePositionAndStats() {
+  const form = document.querySelector('[data-editor-form="admin-athlete"]');
+  if (!form) return;
+
+  const modality = form.querySelector('[name="modality"]').value;
+  const rule = modalityRules[modality];
+  const positionSelect = form.querySelector('[name="position"]');
+  const statsContainer = document.getElementById("admin-athlete-stats");
+  if (positionSelect) {
+    positionSelect.innerHTML = (rule?.positions || [])
+      .map(
+        position =>
+          `<option value="${escapeHtml(position)}">${escapeHtml(position)}</option>`
+      )
+      .join("");
+  }
+  if (statsContainer) {
+    statsContainer.innerHTML = renderAthleteStatisticsFields({
+      modality,
+      stats: {}
+    });
+  }
+  updateAthleticsSubmodalityFields();
 }

@@ -16,6 +16,7 @@ function escapeHtml(value) {
 
 function normalizeAthlete(athlete) {
   const migratedAthlete = { ...athlete };
+  migratedAthlete.campus = migratedAthlete.campus || "";
   const defaultAthlete = athletes.find(item => item.id === athlete.id);
   const femininePositionForms = {
     Armador: "Armadora",
@@ -52,6 +53,18 @@ function normalizeAthlete(athlete) {
   migratedAthlete.modality =
     modalityNameAliases[migratedAthlete.modality] ||
     migratedAthlete.modality;
+  delete migratedAthlete.modalities;
+  const athleticsEventNames = new Set(athleticsEvents.map(event => event.name));
+  const selectedAthleticsEvents = Array.isArray(
+    migratedAthlete.athleticsSubmodalities
+  )
+    ? [...new Set(migratedAthlete.athleticsSubmodalities)].filter(name =>
+        athleticsEventNames.has(name)
+      )
+    : [];
+  migratedAthlete.athleticsSubmodalities = normalizeAthleticsSelections(
+    selectedAthleticsEvents
+  );
   const rule = modalityRules[migratedAthlete.modality];
   const previousStats =
     migratedAthlete.stats && typeof migratedAthlete.stats === "object"
@@ -85,6 +98,23 @@ function normalizeAthlete(athlete) {
   delete migratedAthlete.wins;
 
   return migratedAthlete;
+}
+
+function athleteModalities(athlete) {
+  const modality = modalityNameAliases[athlete.modality] || athlete.modality;
+  return modality ? [modality] : [];
+}
+
+function athleteHasModality(athlete, modalityName) {
+  return athleteModalities(athlete).includes(modalityName);
+}
+
+function normalizeAthleticsSelections(selectedNames) {
+  const selected = new Set(selectedNames);
+  return athleticsEvents
+    .filter(event => selected.has(event.name))
+    .slice(0, 3)
+    .map(event => event.name);
 }
 
 function normalizeModality(modality) {
@@ -141,22 +171,6 @@ function normalizeAthleticsEvent(event) {
   };
 }
 
-function hasCompleteSchedule(schedule) {
-  if (schedule.length !== scheduleDays.length * modalities.length * 2) {
-    return false;
-  }
-
-  return scheduleDays.every(({ day }) =>
-    modalities.every(({ name }) => {
-      const matchingGames = schedule.filter(
-        game => String(game.day) === String(day) && game.modality === name
-      );
-
-      return matchingGames.length === 2;
-    })
-  );
-}
-
 function mergeSeededRecords(defaultRecords, savedRecords, getKey) {
   const savedByKey = new Map(
     savedRecords.map(record => [getKey(record), record])
@@ -174,96 +188,50 @@ function mergeSeededRecords(defaultRecords, savedRecords, getKey) {
 function loadEditorData() {
   try {
     const saved = JSON.parse(localStorage.getItem("ifc-editor-data") || "{}");
-    let requiresMigration = false;
-
-    if (Array.isArray(saved.athletes)) {
-      const restoredAthletes = saved.athletes.map(normalizeAthlete);
-      const savedAthleteIds = new Set(
-        restoredAthletes.map(athlete => athlete.id)
+    const hasLegacyRecords =
+      saved.version !== 2 &&
+      ["athletes", "medals", "campuses", "fixtures"].some(
+        key => Array.isArray(saved[key]) && saved[key].length > 0
       );
-      requiresMigration = saved.athletes.some(athlete =>
-        ["rating", "goals", "assists", "points", "wins"].some(key =>
-          Object.prototype.hasOwnProperty.call(athlete, key)
-        )
-      ) ||
-        saved.athletes.some(
-          (athlete, index) =>
-            athlete.position !== restoredAthletes[index].position
-        ) ||
-        saved.athletes.some(
-          athlete =>
-            !["Masculino", "Feminino"].includes(athlete.naipe)
-        ) ||
-        saved.athletes.some(athlete =>
-          Object.prototype.hasOwnProperty.call(
-            modalityNameAliases,
-            athlete.modality
-          )
-        ) ||
-        athletes.some(athlete => !savedAthleteIds.has(athlete.id));
-      const mergedAthletes = mergeSeededRecords(
-        athletes,
-        restoredAthletes,
-        athlete => athlete.id
-      );
-      athletes.splice(0, athletes.length, ...mergedAthletes);
-    }
+    let requiresMigration =
+      hasLegacyRecords ||
+      (saved.version !== undefined && saved.version !== 2);
 
-    if (Array.isArray(saved.medals)) {
-      const previousSeededMedals = {
-        CA: { gold: 12, silver: 8, bronze: 5 },
-        CO: { gold: 10, silver: 9, bronze: 7 },
-        RS: { gold: 8, silver: 10, bronze: 6 },
-        BL: { gold: 7, silver: 5, bronze: 9 },
-        AR: { gold: 6, silver: 7, bronze: 5 },
-        SB: { gold: 0, silver: 0, bronze: 0 },
-        BR: { gold: 0, silver: 0, bronze: 0 },
-        VI: { gold: 0, silver: 0, bronze: 0 },
-        IB: { gold: 0, silver: 0, bronze: 0 },
-        LU: { gold: 0, silver: 0, bronze: 0 },
-        FR: { gold: 0, silver: 0, bronze: 0 },
-        SO: { gold: 0, silver: 0, bronze: 0 },
-        AL: { gold: 0, silver: 0, bronze: 0 },
-        SR: { gold: 0, silver: 0, bronze: 0 },
-        SF: { gold: 0, silver: 0, bronze: 0 }
-      };
-      const restoredMedals = saved.medals.map(medal => {
-        const previous = previousSeededMedals[medal.code];
-        const current = medals.find(item => item.code === medal.code);
-        const hasPreviousSeed =
-          previous &&
-          current &&
-          ["gold", "silver", "bronze"].every(
-            key => Number(medal[key]) === previous[key]
-          );
-
-        return hasPreviousSeed
-          ? {
-              ...medal,
-              gold: current.gold,
-              silver: current.silver,
-              bronze: current.bronze
-            }
-          : medal;
-      });
-      const savedMedalCodes = new Set(
-        restoredMedals.map(medal => medal.code)
-      );
-      requiresMigration =
-        requiresMigration ||
-        medals.some(medal => !savedMedalCodes.has(medal.code)) ||
-        restoredMedals.some(
-          (medal, index) =>
-            medal.gold !== saved.medals[index].gold ||
-            medal.silver !== saved.medals[index].silver ||
-            medal.bronze !== saved.medals[index].bronze
+    if (!hasLegacyRecords) {
+      if (Array.isArray(saved.athletes)) {
+        athletes.splice(
+          0,
+          athletes.length,
+          ...saved.athletes.map(normalizeAthlete)
         );
-      const mergedMedals = mergeSeededRecords(
-        medals,
-        restoredMedals,
-        medal => medal.code
-      );
-      medals.splice(0, medals.length, ...mergedMedals);
+      }
+      if (Array.isArray(saved.medals)) {
+        medals.splice(0, medals.length, ...saved.medals);
+      }
+      if (Array.isArray(saved.campuses)) {
+        const restoredCampuses = saved.campuses.map(campus => {
+          const defaults = campuses.find(item => item.code === campus.code);
+          return defaults ? { ...defaults, ...campus } : campus;
+        });
+        const restoredCampusCodes = new Set(
+          restoredCampuses.map(campus => campus.code)
+        );
+        requiresMigration =
+          requiresMigration ||
+          campuses.some(campus => !restoredCampusCodes.has(campus.code));
+        campuses.splice(
+          0,
+          campuses.length,
+          ...mergeSeededRecords(
+            campuses,
+            restoredCampuses,
+            campus => campus.code
+          )
+        );
+      }
+      if (Array.isArray(saved.fixtures)) {
+        fixtures.splice(0, fixtures.length, ...saved.fixtures);
+      }
     }
 
     if (Array.isArray(saved.modalities)) {
@@ -271,10 +239,14 @@ function loadEditorData() {
         const normalizedModality = normalizeModality(modality);
         return {
           ...normalizedModality,
-          next: String(normalizedModality.next).replace(
-            /^Ao vivo\s*[·-]\s*/i,
-            "Hoje · "
-          )
+          athletes: hasLegacyRecords ? 0 : normalizedModality.athletes,
+          campus: hasLegacyRecords ? 0 : normalizedModality.campus,
+          next: hasLegacyRecords
+            ? "A definir"
+            : String(normalizedModality.next).replace(
+                /^Ao vivo\s*[·-]\s*/i,
+                "Hoje · "
+              )
         };
       });
       const savedModalityNames = new Set(
@@ -290,7 +262,11 @@ function loadEditorData() {
           modality =>
             !modality.category ||
             !Array.isArray(modality.naipes) ||
-            !modality.status
+            !modality.status ||
+            (hasLegacyRecords &&
+              (Number(modality.athletes) !== 0 ||
+                Number(modality.campus) !== 0 ||
+                modality.next !== "A definir"))
         );
       const mergedModalities = mergeSeededRecords(
         modalities,
@@ -301,54 +277,24 @@ function loadEditorData() {
       modalities.splice(0, modalities.length, ...mergedModalities);
     }
 
-    if (Array.isArray(saved.campuses)) {
-      const restoredCampuses = saved.campuses.map(campus => {
-        const defaultCampus = campuses.find(
-          item => item.code === campus.code
-        );
-
-        return {
-          ...campus,
-          athletes: campus.athletes ?? defaultCampus?.athletes
-        };
-      });
-      const savedCampusCodes = new Set(
-        restoredCampuses.map(campus => campus.code)
-      );
-      requiresMigration =
-        requiresMigration ||
-        campuses.some(campus => !savedCampusCodes.has(campus.code)) ||
-        restoredCampuses.some(
-          (campus, index) =>
-            campus.athletes !== saved.campuses[index].athletes
-        );
-      const mergedCampuses = mergeSeededRecords(
-        campuses,
-        restoredCampuses,
-        campus => campus.code
-      );
-      campuses.splice(0, campuses.length, ...mergedCampuses);
+    if (Array.isArray(saved.podiums)) {
+      podiums.splice(0, podiums.length, ...saved.podiums);
     }
 
-    if (Array.isArray(saved.fixtures) && hasCompleteSchedule(saved.fixtures)) {
-      const restoredFixtures = saved.fixtures.map(game => {
-        const wasLive =
-          game.live ||
-          String(game.tag).toLocaleUpperCase("pt-BR") === "AO VIVO";
-        const restoredGame = {
-          ...game,
-          tag: wasLive ? "A definir" : game.tag
-        };
-
-        delete restoredGame.live;
-        if (wasLive) delete restoredGame.score;
-
-        return restoredGame;
-      });
-
-      fixtures.splice(0, fixtures.length, ...restoredFixtures);
-    } else if (Array.isArray(saved.fixtures)) {
-      requiresMigration = true;
+    if (Array.isArray(saved.accessRequests)) {
+      accessRequests.splice(
+        0,
+        accessRequests.length,
+        ...saved.accessRequests.filter(
+          request =>
+            request &&
+            ["pending", "approved", "rejected"].includes(request.status) &&
+            typeof request.email === "string" &&
+            typeof request.name === "string" &&
+            typeof request.campus === "string" &&
+            typeof request.position === "string"
+        )
+      );
     }
 
     if (Array.isArray(saved.athleticsEvents)) {
@@ -379,6 +325,12 @@ function loadEditorData() {
       athleticsModality.submodalities = athleticsEvents;
     }
 
+    selectedAdminAthleteIndex = athletes.length ? 0 : -1;
+    selectedFixtureIndex = fixtures.length ? 0 : -1;
+    selectedMedalIndex = medals.length ? 0 : -1;
+    selectedCampusIndex = campuses.length ? 0 : -1;
+    selectedPodiumIndex = podiums.length ? 0 : -1;
+
     if (requiresMigration) {
       saveEditorData();
     }
@@ -390,8 +342,11 @@ function loadEditorData() {
 function saveEditorData() {
   try {
     const data = {
+      version: 2,
       athletes,
       medals,
+      podiums,
+      accessRequests,
       modalities,
       campuses,
       fixtures,

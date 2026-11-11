@@ -1,6 +1,18 @@
 function renderCalendar() {
+  const fixtureDays = [
+    ...new Map(
+      fixtures.map(fixture => [
+        String(fixture.day),
+        {
+          day: String(fixture.day),
+          label: fixture.dayLabel || `${fixture.day} ${fixture.month || ""}`
+        }
+      ])
+    ).values()
+  ];
+
   pageContent.innerHTML = `
-    <p class="eyebrow">${scheduleDateRangeLabel} · EDIÇÃO 2025</p>
+    <p class="eyebrow">PROGRAMAÇÃO DO JIFC</p>
     <h1 style="margin-bottom: 20px;">Calendário</h1>
 
     <div class="list-toolbar">
@@ -17,11 +29,12 @@ function renderCalendar() {
         id="calendar-day-filter"
         aria-label="Selecionar dia"
       >
-        ${scheduleDays
+        <option value="">Todos os dias</option>
+        ${fixtureDays
           .map(
-            scheduleDay => `
-              <option value="${scheduleDay.day}">
-                ${escapeHtml(scheduleDay.label)}
+            fixtureDay => `
+              <option value="${escapeHtml(fixtureDay.day)}">
+                ${escapeHtml(fixtureDay.label)}
               </option>`
           )
           .join("")}
@@ -52,17 +65,18 @@ function renderCalendar() {
 function updateCalendar() {
   const selectedDay = document.getElementById("calendar-day-filter").value;
   const selectedModality = document.getElementById("calendar-filter").value;
-  const scheduleDay = scheduleDays.find(
-    item => String(item.day) === selectedDay
-  );
+  const scheduleDay = selectedDay
+    ? fixtures.find(fixture => String(fixture.day) === selectedDay)
+    : null;
   const filteredFixtures = fixtures.filter(
     fixture =>
-      String(fixture.day) === selectedDay &&
+      (!selectedDay || String(fixture.day) === selectedDay) &&
       (!selectedModality || fixture.modality === selectedModality)
   );
 
   document.getElementById("calendar-day-title").textContent =
-    scheduleDay?.label || "Programação";
+    scheduleDay?.dayLabel ||
+    (scheduleDay ? `${scheduleDay.day} ${scheduleDay.month || ""}` : "Programação");
   document.getElementById("calendar-event-count").textContent =
     `${filteredFixtures.length} atividades`;
 
@@ -70,7 +84,7 @@ function updateCalendar() {
   eventList.innerHTML = filteredFixtures.length
     ? calendarRows(filteredFixtures)
     : `<div class="empty-state">
-        Nenhum jogo desta modalidade está na programação deste dia.
+        Nenhum jogo cadastrado.
       </div>`;
 }
 

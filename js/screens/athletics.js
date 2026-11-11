@@ -20,9 +20,12 @@ function renderAthletics() {
     )
     .join("");
   const featuredAthletes = athletes
-    .filter(athlete => athlete.modality === "Atletismo")
+    .filter(athlete => athleteHasModality(athlete, "Atletismo"))
     .map(athleteCard)
     .join("");
+  const athleticsAthletes = athletes.filter(athlete =>
+    athleteHasModality(athlete, "Atletismo")
+  );
 
   pageContent.innerHTML = `
     <h1>Atletismo</h1>
@@ -30,8 +33,8 @@ function renderAthletics() {
     <section class="detail-hero">
       <p class="eyebrow" style="font-size: 20px">PROGRAMAÇÃO</p>
       <div class="detail-stats">
-        <span><strong>124</strong><small>ATLETAS</small></span>
-        <span><strong>12</strong><small>CAMPUS</small></span>
+        <span><strong>${athleticsAthletes.length}</strong><small>ATLETAS</small></span>
+        <span><strong>${new Set(athleticsAthletes.map(athlete => athlete.campus)).size}</strong><small>CAMPUS</small></span>
         <span>
           <strong>${athleticsEvents.length}</strong>
           <small>PROVAS</small>

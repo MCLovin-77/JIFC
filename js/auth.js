@@ -1,4 +1,4 @@
-// Modais, autenticação demonstrativa e detalhes de atletas/modalidades.
+// Demonstração de acesso e detalhes de atletas/modalidades.
 function openModal(content) {
   const modalRoot = document.getElementById("modal-root");
 
@@ -35,123 +35,244 @@ function closeModal() {
   document.getElementById("modal-root").innerHTML = "";
 }
 
-function openAuth() {
-  if (activeRole) {
-    renderEditor();
+function openEditor() {
+  renderAccessPortal();
+}
+
+const demoAdminCredentials = {
+  email: "admin@jifc.demo",
+  password: "jifc-demo-admin"
+};
+
+function isServerAccessApproved() {
+  return (
+    activeRole === "server" &&
+    accessRequests.some(
+      request =>
+        request.id === activeServerRequestId &&
+        request.status === "approved"
+    )
+  );
+}
+
+function getServerAthleteIndexes() {
+  const request = accessRequests.find(
+    item => item.id === activeServerRequestId && item.status === "approved"
+  );
+  if (!request) return [];
+
+  const campusName = request.campus.trim().toLocaleLowerCase("pt-BR");
+  return athletes.reduce((indexes, athlete, index) => {
+    if (String(athlete.campus || "").trim().toLocaleLowerCase("pt-BR") === campusName) {
+      indexes.push(index);
+    }
+    return indexes;
+  }, []);
+}
+
+function isEditorSectionAllowed(section) {
+  if (activeRole === "admin") return true;
+  return isServerAccessApproved() && section === "athletes";
+}
+
+function isEditorFormAllowed(formType) {
+  if (activeRole === "admin") return true;
+  return isServerAccessApproved() && formType === "admin-athlete";
+}
+
+function startAccessDemo(role, requestId = null) {
+  if (role !== "admin" && role !== "server") return;
+  if (
+    role === "server" &&
+    !accessRequests.some(
+      request => request.id === requestId && request.status === "approved"
+    )
+  ) {
+    showToast("A solicitação precisa ser aprovada pelo admin.", true);
     return;
   }
 
-  const credentials = {
-    server: {
-      email: "servidor@ifc.edu.br",
-      password: "servidor2025"
-    },
-    admin: {
-      email: "admin@ifc.edu.br",
-      password: "admin2025"
-    }
-  };
+  activeServerRequestId = role === "server" ? requestId : null;
+  editorSection = "athletes";
+  if (role === "server") {
+    selectedAdminAthleteIndex = getServerAthleteIndexes()[0] ?? -1;
+  }
+  activeRole = role;
+  renderEditor();
+}
 
-  openModal(`
-    <button
-      class="modal-close"
-      type="button"
-      aria-label="Fechar"
-    >Fechar</button>
-    <p class="eyebrow">JOGOS IFC · ÁREA RESTRITA</p>
-    <h2>Acesso para edição</h2>
-    <p class="modal-intro">
-      Escolha um perfil demonstrativo para preencher os dados de acesso.
-    </p>
-
-    <div class="demo-access-list">
-      <button
-        class="secondary-button"
-        type="button"
-        data-demo-login="server"
-      >
-        <strong>Servidor</strong>
-        <span>Preencher acesso de edição de atletas</span>
-      </button>
-      <button
-        class="secondary-button"
-        type="button"
-        data-demo-login="admin"
-      >
-        <strong>Administrador</strong>
-        <span>Preencher acesso de edição completa</span>
-      </button>
-    </div>
-
-    <form id="auth-form">
-      <div class="form-grid">
-        <div class="form-field full">
-          <label for="login-email">E-mail de demonstração</label>
-          <input
-            id="login-email"
-            name="email"
-            type="email"
-            required
-            autocomplete="username"
-            value="${credentials.server.email}"
-          />
-        </div>
-        <div class="form-field full">
-          <label for="login-password">Senha</label>
-          <input
-            id="login-password"
-            name="password"
-            type="password"
-            required
-            autocomplete="current-password"
-            value="${credentials.server.password}"
-          />
-        </div>
-      </div>
-
-      <div class="form-note">
-        Protótipo local: a autenticação e as permissões são demonstrativas,
-        não substituem um serviço seguro de login.
-      </div>
-      <button class="primary-button form-submit" type="submit">
-        Entrar
-      </button>
-    </form>`);
-
-  document
-    .getElementById("auth-form")
-    .addEventListener("submit", event => {
-      event.preventDefault();
-
-      const email = document
-        .getElementById("login-email")
-        .value.trim()
-        .toLocaleLowerCase("pt-BR");
-      const password = document.getElementById("login-password").value;
-      const role = Object.entries(credentials).find(
-        ([, account]) =>
-          account.email === email && account.password === password
-      )?.[0];
-
-      if (!role) {
-        showToast("E-mail ou senha demonstrativa incorretos.", true);
-        return;
-      }
-
-      activeRole = role;
-      editorSection = "athletes";
-      closeModal();
-      renderEditor();
-    });
-
-  document.querySelectorAll("[data-demo-login]").forEach(button => {
-    button.addEventListener("click", () => {
-      const account = credentials[button.dataset.demoLogin];
-
-      document.getElementById("login-email").value = account.email;
-      document.getElementById("login-password").value = account.password;
-    });
+function renderAccessPortal(view = "login", statusRequestId = lastAccessRequestId) {
+  activeRole = null;
+  activeServerRequestId = null;
+  document.getElementById("breadcrumb-current").textContent =
+    "Acesso demonstrativo";
+  document.querySelectorAll(".nav-link").forEach(link => {
+    link.classList.remove("active");
   });
+  updateEditorRoleControls();
+
+  const request = accessRequests.find(item => item.id === statusRequestId);
+  const statusLabels = {
+    pending: "Aguardando validação do admin",
+    approved: "Acesso aprovado",
+    rejected: "Solicitação não aprovada"
+  };
+  const requestStatus = request
+    ? `<div class="access-status ${escapeHtml(request.status)}" role="status">
+        <strong>${escapeHtml(statusLabels[request.status])}</strong>
+        <span>${escapeHtml(request.email)} · ${escapeHtml(request.campus)}</span>
+      </div>`
+    : "";
+
+  pageContent.innerHTML = `
+    <section class="access-portal">
+      <div class="panel access-card access-card-centered">
+      ${
+        view === "request"
+          ? `<h1>Solicitar acesso</h1>
+            ${requestStatus}
+            <form data-access-request-form>
+              <div class="access-form-fields">
+                ${editorField("Nome completo", "name", "", "text", "required")}
+                ${editorField(
+                  "E-mail institucional (@ifc.edu.br)",
+                  "email",
+                  "",
+                  "email",
+                  "required"
+                )}
+                ${editorField("Campus", "campus", "", "text", "required")}
+                ${editorSelect(
+                  "Atuação no campus",
+                  "position",
+                  "Treinador(a)",
+                  [
+                    "Treinador(a)",
+                    "Coordenador(a)",
+                    "Professor(a)",
+                    "Técnico(a)-administrativo(a)",
+                    "Outro(a)"
+                  ]
+                )}
+              </div>
+              <button type="submit" class="primary-button form-submit">
+                Enviar solicitação
+              </button>
+            </form>
+            <button type="button" class="text-button access-back" data-access-view="login">
+              Voltar para entrar
+            </button>`
+          : `<h1>Já tem conta?</h1>
+            ${requestStatus}
+            <form data-access-login-form>
+              <div class="access-form-fields">
+                ${editorField("E-mail", "email", "", "email", "required")}
+                ${editorField("Senha", "password", "", "password", "required")}
+              </div>
+              <button type="submit" class="primary-button form-submit">
+                Entrar
+              </button>
+            </form>
+            <button type="button" class="text-button access-request-link" data-access-view="request">
+              Ainda não tem conta? Solicitar acesso
+            </button>`
+      }
+      </div>
+    </section>`;
+}
+
+function submitAccessLogin(form) {
+  const values = Object.fromEntries(new FormData(form).entries());
+  const email = String(values.email || "").trim().toLowerCase();
+  const password = String(values.password || "");
+
+  if (
+    email === demoAdminCredentials.email &&
+    password === demoAdminCredentials.password
+  ) {
+    startAccessDemo("admin");
+    return;
+  }
+
+  const approvedRequest = accessRequests.find(
+    request => request.email.toLowerCase() === email && request.status === "approved"
+  );
+  if (approvedRequest && password) {
+    startAccessDemo("server", approvedRequest.id);
+    return;
+  }
+
+  const pendingRequest = accessRequests.find(
+    request => request.email.toLowerCase() === email && request.status === "pending"
+  );
+  if (pendingRequest) {
+    lastAccessRequestId = pendingRequest.id;
+    showToast("Seu pedido ainda aguarda aprovação do admin.", true);
+    renderAccessPortal("login", pendingRequest.id);
+    return;
+  }
+
+  showToast("E-mail ou senha inválidos para esta demonstração.", true);
+}
+
+function submitAccessRequest(form) {
+  const values = Object.fromEntries(new FormData(form).entries());
+  const email = String(values.email || "").trim().toLowerCase();
+  if (!/@(?:[a-z0-9-]+\.)*ifc\.edu\.br$/i.test(email)) {
+    showToast("Use um e-mail institucional terminado em ifc.edu.br.", true);
+    return;
+  }
+
+  const existingRequest = accessRequests.find(
+    request =>
+      request.email.toLowerCase() === email &&
+      ["pending", "approved"].includes(request.status)
+  );
+  if (existingRequest) {
+    lastAccessRequestId = existingRequest.id;
+    showToast("Já existe um pedido ativo para este e-mail.", true);
+    renderAccessPortal();
+    return;
+  }
+
+  const request = {
+    id: String(Date.now()),
+    name: String(values.name).trim(),
+    email,
+    campus: String(values.campus).trim(),
+    position: String(values.position),
+    status: "pending",
+    createdAt: new Date().toISOString()
+  };
+  accessRequests.push(request);
+  lastAccessRequestId = request.id;
+  if (saveEditorData()) {
+    showToast("Pedido enviado para análise do admin.");
+  }
+  renderAccessPortal("login", request.id);
+}
+
+function updateAccessRequest(requestId, action) {
+  const request = accessRequests.find(item => item.id === requestId);
+  if (!request) {
+    showToast("Solicitação não encontrada.", true);
+    return;
+  }
+
+  if (activeRole !== "admin" || !["approve", "reject"].includes(action)) {
+    showToast("Somente o admin da demonstração pode analisar pedidos.", true);
+    return;
+  }
+
+  request.status = action === "approve" ? "approved" : "rejected";
+  if (saveEditorData()) {
+    showToast(
+      action === "approve"
+        ? "Acesso aprovado na demonstração."
+        : "Solicitação recusada na demonstração."
+    );
+  }
+  renderEditor();
 }
 
 function openAthlete(id) {
@@ -176,7 +297,7 @@ function openAthlete(id) {
         <h2>${escapeHtml(athlete.name)}</h2>
         <p>
           ${escapeHtml(athlete.campus)} ·
-          ${escapeHtml(athlete.modality)} ·
+          ${escapeHtml(athleteModalities(athlete).join(", "))} ·
           ${escapeHtml(athlete.position)}
         </p>
       </div>
@@ -214,8 +335,8 @@ function openAthlete(id) {
           </p>`
         : ""
     }
-    <button class="primary-button form-submit" data-open-auth="login">
-      Área do servidor · editar atleta
+    <button class="primary-button form-submit" data-open-editor>
+      Abrir painel de cadastro
     </button>`);
 }
 

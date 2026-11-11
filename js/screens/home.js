@@ -1,9 +1,11 @@
 function renderHome() {
+  const upcomingFixtures = fixtures.slice(4, 8);
+
   pageContent.innerHTML = `
     <section class="hero">
       <div class="hero-copy">
         <p class="eyebrow">
-          ${scheduleDateRangeLabel} · SANTA CATARINA
+          JOGOS DO INSTITUTO FEDERAL CATARINENSE
         </p>
         <h1 style="margin-top: 30px;">
           JIFC 2025
@@ -20,8 +22,8 @@ function renderHome() {
       </div>
       <div class="hero-scene">
         <div class="hero-upcoming">
-          <strong>Jogos ao vivo em breve</strong>
-          <small>As transmissões serão anunciadas por aqui.</small>
+          <strong>Jogos e disputas a cadastrar</strong>
+          <small>Cadastre a programação pelo painel do JIFC.</small>
         </div>
       </div>
     </section>
@@ -32,7 +34,7 @@ function renderHome() {
           Atletas inscritos
         </div>
         <div class="stat-value">
-        900
+        ${athletes.length}
         </div>
       </article>
       <article class="stat-card">
@@ -83,28 +85,31 @@ function renderHome() {
               <th>TOTAL</th>
             </tr>
           </thead>
-          <tbody>${medalRows(5)}</tbody>
+          <tbody>
+            ${medalRows(5) || `
+              <tr>
+                <td colspan="6">
+                  <div class="empty-state">Nenhuma medalha cadastrada.</div>
+                </td>
+              </tr>`}
+          </tbody>
         </table>
       </section>
 
       <section class="panel">
         <div class="panel-title-row">
           <div>
-            <h2>Agenda de hoje</h2>
-            <p style="margin-bottom: 10px;">
-              ${scheduleDays[0].label}
-            </p>
+            <h2>Programação</h2>
+            <p style="margin-bottom: 10px;">Jogos cadastrados</p>
           </div>
           <button data-page="calendario">
             Ver agenda
           </button>
         </div>
         <div class="fixture-list">
-          ${fixtureRows(
-            fixtures
-              .filter(game => String(game.day) === "25")
-              .slice(0, 4)
-          )}
+          ${fixtures.length
+            ? fixtureRows(fixtures.slice(0, 4))
+            : `<div class="empty-state">Nenhum jogo cadastrado.</div>`}
         </div>
       </section>
     </div>
@@ -120,32 +125,32 @@ function renderHome() {
           </button>
         </div>
         <div class="athlete-mini-list">
-          ${athletes.slice(0, 4).map(athleteMiniCard).join("")}
+          ${athletes.length
+            ? athletes.slice(0, 4).map(athleteMiniCard).join("")
+            : `<div class="empty-state">Nenhum atleta cadastrado.</div>`}
         </div>
       </section>
 
       <section class="panel">
         <div class="panel-title-row">
           <div>
-            <h2>Próximas disputas</h2>
+            <h2>Jogos</h2>
           </div>
           <button data-page="calendario">
             Ver agenda
           </button>
         </div>
         <div class="fixture-list">
-          ${fixtureRows(
-            fixtures
-              .filter(game => String(game.day) === "26")
-              .slice(0, 4)
-          )}
+          ${upcomingFixtures.length
+            ? fixtureRows(upcomingFixtures)
+            : `<div class="empty-state">Nenhum outro jogo cadastrado.</div>`}
         </div>
       </section>
     </div>`;
 }
 
 function athleteMiniCard(athlete) {
-  const campusName = athlete.campus.replace("Campus ", "");
+  const campusName = String(athlete.campus || "").replace("Campus ", "");
 
   return `
     <div class="athlete-mini" data-athlete="${escapeHtml(athlete.id)}">
@@ -153,7 +158,7 @@ function athleteMiniCard(athlete) {
       <span>
         <strong>${escapeHtml(athlete.name)}</strong>
         <small>
-          ${escapeHtml(athlete.modality)} · ${escapeHtml(campusName)}
+          ${escapeHtml(athleteModalities(athlete).join(", "))} · ${escapeHtml(campusName)}
         </small>
       </span>
     </div>`;

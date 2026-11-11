@@ -25,11 +25,11 @@ build nem servidor local. As imagens de demonstração são carregadas do Unspla
 
 ### JavaScript compartilhado
 
-- `js/data.js`: dados demonstrativos e estado selecionado da interface.
+- `js/data.js`: modalidades e estado selecionado da interface.
 - `js/storage.js`: persistência no `localStorage`, escape de HTML, classificação
   de medalhas e utilitários compartilhados.
 - `js/pages.js`: nomes, opções compartilhadas e roteador das telas.
-- `js/auth.js`: modais, login demonstrativo e detalhes de atletas.
+- `js/auth.js`: login demonstrativo, solicitação de acesso e detalhes de atletas.
 - `js/editor.js`: estado, salvamento e eventos do painel de edição.
 
 ### Telas públicas
@@ -38,17 +38,15 @@ build nem servidor local. As imagens de demonstração são carregadas do Unspla
 - `js/screens/athletes.js`: lista, cartões e filtros de atletas.
 - `js/screens/calendar.js`: programação e filtro de jogos.
 - `js/screens/athletics.js`: provas e destaques do atletismo.
-- `js/screens/podiums.js`: pódio e classificação de medalhas.
+- `js/screens/podiums.js`: pódios cadastrados e quadro de medalhas.
 - `js/screens/campuses.js`: cartões e informações dos campus.
 - `js/screens/modalities.js`: lista e busca de modalidades.
-- `js/screens/modality-details.js`: grupos, eliminatórias e detalhes de uma
-  modalidade.
+- `js/screens/modality-details.js`: detalhes e resultados de uma modalidade.
 
-### Edição
+### Edição e acesso demonstrativo
 
 - `js/editor/fields.js`: construtores de campos, seletores e formulários.
-- `js/editor/server.js`: tela de edição de atletas do perfil de servidor.
-- `js/editor/admin.js`: painel administrativo e formulários de cada seção.
+- `js/editor/admin.js`: painéis admin/servidor e formulários de cada seção.
 
 ### Estilos
 
@@ -64,21 +62,30 @@ build nem servidor local. As imagens de demonstração são carregadas do Unspla
 As alterações do editor são guardadas na chave `ifc-editor-data` do
 `localStorage`. A preferência de tema fica em `ifc-theme`. Esses dados são
 locais ao navegador e fazem parte da demonstração, não de um serviço remoto.
+O acesso abre uma demonstração sem autenticação real. O admin pode editar todas
+as seções e analisar solicitações; o servidor aprovado pode editar os campos
+existentes dos atletas vinculados ao campus aprovado, mas não pode alterar o
+vínculo de campus nem editar outras seções. A solicitação pede e-mail
+institucional, campus e atuação. Pedidos, aprovações e alterações ficam apenas
+no `localStorage`; a senha do servidor é apenas ilustrativa e não é verificada.
+Cada atleta é associado a uma única modalidade; no Atletismo, pode selecionar
+até três provas, sem obrigatoriedade de preencher todas. As credenciais do admin da demonstração são
+`admin@jifc.demo` / `jifc-demo-admin`. Não use este protótipo como sistema de
+acesso restrito.
 
 Os scripts são carregados em `index.html` como scripts clássicos, na ordem
 necessária para manter a compatibilidade com a abertura direta do arquivo.
 
 ## Programação e dados de atletas
 
-O calendário apresenta dois eventos por modalidade em cada dia, de 25 a 27
-de junho, e permite filtrar a programação por dia e modalidade. As posições e
-estatísticas do cadastro de atletas dependem do esporte; por exemplo, futsal
-usa gols e assistências, enquanto vôlei usa pontos. Notas de atletas não são
-mantidas, inclusive na migração de dados antigos do navegador.
-
-A demonstração inclui os 15 campi participantes e um atleta de cada campus,
-distribuídos entre as modalidades cadastradas. Dados adicionados ao protótipo
-são preservados ao migrar informações salvas no navegador.
+Os 15 campi do IFC são listados inicialmente com sigla, zero medalhas e zero
+estudantes; esses números podem ser atualizados no painel. Atletas, medalhas,
+pódios e jogos iniciam vazios. O painel permite cadastrar atletas, medalhas,
+pódios e jogos; os dados ficam no navegador. Ao abrir uma versão que ainda
+tenha os registros demonstrativos antigos, eles são limpos automaticamente.
+As posições e estatísticas do
+cadastro de atletas dependem do esporte; por exemplo, futsal usa gols e
+assistências, enquanto vôlei usa pontos.
 
 As modalidades guardam categoria (individual/coletiva), naipes e status.
 As provas de Atletismo são submodalidades com naipe e status próprios; o

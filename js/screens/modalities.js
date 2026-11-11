@@ -9,8 +9,15 @@ function renderModalities() {
 
 function modalityCards(items) {
   return items
-    .map(
-      modality => `
+    .map(modality => {
+      const modalityAthletes = athletes.filter(
+        athlete => athleteHasModality(athlete, modality.name)
+      );
+      const campusCount = new Set(
+        modalityAthletes.map(athlete => normalizeCampusName(athlete.campus))
+      ).size;
+
+      return `
         <article class="modality-card">
           <div class="modality-top">
             <span class="position-pill">JIFC 2025</span>
@@ -28,14 +35,14 @@ function modalityCards(items) {
           }
           <div class="modality-foot">
             <span>
-              ${escapeHtml(modality.athletes)} atletas ·
-              ${escapeHtml(modality.campus)} campus
+              ${modalityAthletes.length} atletas ·
+              ${campusCount} campus
             </span>
             <button data-modality="${escapeHtml(modality.name)}">
               Detalhes
             </button>
           </div>
-        </article>`
-    )
+        </article>`;
+    })
     .join("");
 }
