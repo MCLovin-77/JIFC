@@ -160,6 +160,9 @@
   .editor-form-grid, .demo-access-list {
     grid-template-columns: 1fr;
   }
+  .campus-participants {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .editor-panel {
     padding: 17px;
   }

@@ -7,6 +7,7 @@ function renderAthletics() {
           <td>${escapeHtml(event.name)}</td>
           <td>${escapeHtml(event.category)}</td>
           <td>${escapeHtml((event.naipes || []).join(" e "))}</td>
+          <td>${renderAthleticsBatteries(event)}</td>
           <td>
             <span
               class="status-pill${
@@ -57,6 +58,7 @@ function renderAthletics() {
               <th>PROVA</th>
               <th>TIPO</th>
               <th>NAIPE</th>
+              <th>BATERIAS</th>
               <th>STATUS</th>
             </tr>
           </thead>
@@ -74,4 +76,34 @@ function renderAthletics() {
       </button>
     </div>
     <div class="card-grid">${featuredAthletes}</div>`;
+}
+
+function renderAthleticsBatteries(event, naipe) {
+  const batteries = (event.batteries || []).filter(
+    battery => !naipe || (battery.naipes || []).includes(naipe)
+  );
+
+  if (!batteries.length) {
+    return `<span class="group-note">A definir</span>`;
+  }
+
+  return `
+    <details class="athletics-event-details">
+      <summary>${batteries.length} ${
+        batteries.length === 1 ? "bateria" : "baterias"
+      }</summary>
+      <div class="athletics-heats">
+        <div class="athletics-heats-grid">
+          ${batteries
+            .map(
+              battery => `
+                <div class="athletics-heat">
+                  <strong>${escapeHtml(battery.name)}</strong>
+                  <span>${escapeHtml((battery.campuses || []).join(", "))}</span>
+                </div>`
+            )
+            .join("")}
+        </div>
+      </div>
+    </details>`;
 }

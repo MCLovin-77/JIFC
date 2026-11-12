@@ -1,16 +1,4 @@
 function renderCalendar() {
-  const fixtureDays = [
-    ...new Map(
-      fixtures.map(fixture => [
-        String(fixture.day),
-        {
-          day: String(fixture.day),
-          label: fixture.dayLabel || `${fixture.day} ${fixture.month || ""}`
-        }
-      ])
-    ).values()
-  ];
-
   pageContent.innerHTML = `
     <p class="eyebrow">PROGRAMAÇÃO DO JIFC</p>
     <h1 style="margin-bottom: 20px;">Calendário</h1>
@@ -24,28 +12,20 @@ function renderCalendar() {
         <option value="">Todas as modalidades</option>
         ${modalities.map(modalityOption).join("")}
       </select>
-      <select
+      <input
         class="select-box"
         id="calendar-day-filter"
-        aria-label="Selecionar dia"
-      >
-        <option value="">Todos os dias</option>
-        ${fixtureDays
-          .map(
-            fixtureDay => `
-              <option value="${escapeHtml(fixtureDay.day)}">
-                ${escapeHtml(fixtureDay.label)}
-              </option>`
-          )
-          .join("")}
-      </select>
+        type="date"
+        aria-label="Selecionar data"
+        title="Selecionar data"
+      />
     </div>
 
     <section class="panel">
       <div class="panel-title-row">
         <div>
           <h3 id="calendar-day-title"></h3>
-          <p style="padding-top: 10px;">Jogos e provas programados</p>
+          <p style="padding-top: 10px;">Jogos e provas programados · dados demonstrativos</p>
         </div>
         <span class="status-pill" id="calendar-event-count"></span>
       </div>
@@ -65,18 +45,14 @@ function renderCalendar() {
 function updateCalendar() {
   const selectedDay = document.getElementById("calendar-day-filter").value;
   const selectedModality = document.getElementById("calendar-filter").value;
-  const scheduleDay = selectedDay
-    ? fixtures.find(fixture => String(fixture.day) === selectedDay)
-    : null;
   const filteredFixtures = fixtures.filter(
     fixture =>
-      (!selectedDay || String(fixture.day) === selectedDay) &&
+      (!selectedDay || fixture.date === selectedDay) &&
       (!selectedModality || fixture.modality === selectedModality)
   );
 
   document.getElementById("calendar-day-title").textContent =
-    scheduleDay?.dayLabel ||
-    (scheduleDay ? `${scheduleDay.day} ${scheduleDay.month || ""}` : "Programação");
+    selectedDay ? formatFixtureDate(selectedDay) : "Programação";
   document.getElementById("calendar-event-count").textContent =
     `${filteredFixtures.length} atividades`;
 
@@ -95,13 +71,19 @@ function calendarRows(items) {
         <article class="event-card">
           <div class="event-row">
             <div class="event-day">
-              <strong>${escapeHtml(fixture.day)}</strong>
-              <small>${escapeHtml(fixture.month)}</small>
+              <strong>${escapeHtml(fixtureDateDay(fixture.date))}</strong>
+              <small>${escapeHtml(fixtureDateMonth(fixture.date))}</small>
             </div>
             <div class="event-detail">
               <strong>${escapeHtml(fixture.title)}</strong>
               <p>
-                ${escapeHtml(fixture.meta)}
+                ${escapeHtml(fixture.modality)} · ${escapeHtml(fixture.meta)}
+                ${fixture.phase ? ` · ${escapeHtml(fixture.phase)}` : ""}
+                ${
+                  fixture.campuses?.length
+                    ? ` · Campus: ${escapeHtml(fixture.campuses.join(", "))}`
+                    : ""
+                }
                 ${
                   fixture.score
                     ? ` · Placar ${escapeHtml(fixture.score)}`

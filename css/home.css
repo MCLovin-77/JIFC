@@ -143,6 +143,9 @@
   letter-spacing: -.2px;
   margin: 0;
 }
+.panel-title-row > div > p {
+  display: none;
+}
 .panel-title-row button {
   background: transparent;
   border: 0;
@@ -268,9 +271,23 @@
 }
 .home-bottom {
   display: grid;
-  gap: 18px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   margin-top: 18px;
+}
+.home-athletes-panel {
+  min-width: 0;
+}
+.athlete-mini-list.home-athlete-list {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+.athlete-mini-list.home-athlete-list .athlete-mini {
+  flex: 0 0 240px;
+}
+.athlete-mini-list.home-athlete-list .empty-state {
+  width: 100%;
 }
 .athlete-mini-list {
   display: grid;

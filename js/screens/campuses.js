@@ -7,8 +7,8 @@ function renderCampuses() {
             <h3>Campus ${escapeHtml(campus.name)}</h3>
             <div class="campus-facts">
               <span>
-                <strong>${escapeHtml(campus.athletes || 0)}</strong>
-                estudantes
+                <strong>${escapeHtml(campus.athletes)}</strong>
+                participantes
               </span>
               <span>
                 <strong>${escapeHtml(medalTotalForCampus(campus))}</strong>

@@ -20,7 +20,7 @@ function modalityCards(items) {
       return `
         <article class="modality-card">
           <div class="modality-top">
-            <span class="position-pill">JIFC 2025</span>
+            <span class="position-pill">JIFC 2026</span>
           </div>
           <h3>${escapeHtml(modality.name)}</h3>
           <p>

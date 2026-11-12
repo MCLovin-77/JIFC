@@ -1,4 +1,4 @@
-# JIFC
+# JIFC 2026
 
 Protótipo estático do JIFC (Jogos do Instituto Federal Catarinense).
 
@@ -78,15 +78,20 @@ necessária para manter a compatibilidade com a abertura direta do arquivo.
 
 ## Programação e dados de atletas
 
-Os 15 campi do IFC são listados inicialmente com sigla, zero medalhas e zero
-estudantes; esses números podem ser atualizados no painel. Atletas, medalhas,
-pódios e jogos iniciam vazios. O painel permite cadastrar atletas, medalhas,
-pódios e jogos; os dados ficam no navegador. Ao abrir uma versão que ainda
-tenha os registros demonstrativos antigos, eles são limpos automaticamente.
+Os 15 campi do IFC são listados inicialmente com sigla e limite de 0 a 60
+participantes por campus. A página de campus exibe contagens fictícias entre
+48 e 60, sem criar cadastros individuais de atletas. A demonstração inclui seis
+atletas, medalhas, pódios de modalidades que não são Atletismo e jogos/eventos
+em todas as modalidades. O painel permite cadastrar e atualizar esses dados;
+as alterações ficam no navegador. As fotos de atletas são enviadas como
+arquivos de imagem (até 2 MB), sem precisar informar uma URL.
+As siglas dos campus são exibidas com duas letras.
 As posições e estatísticas do
 cadastro de atletas dependem do esporte; por exemplo, futsal usa gols e
 assistências, enquanto vôlei usa pontos.
 
 As modalidades guardam categoria (individual/coletiva), naipes e status.
-As provas de Atletismo são submodalidades com naipe e status próprios; o
-Tênis de mesa registra disputas individuais e em duplas.
+As provas de Atletismo incluem baterias demonstrativas; Basquetebol mostra
+grupos e chave mata-mata; e Xadrez usa rodadas e classificação no formato
+suíço. A data dos jogos e eventos pode ser escolhida pelo calendário do
+formulário. O Tênis de mesa registra disputas individuais e em duplas.

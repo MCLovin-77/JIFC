@@ -171,6 +171,61 @@ function normalizeAthleticsEvent(event) {
   };
 }
 
+function normalizeFixture(fixture) {
+  const monthNumbers = {
+    JAN: "01",
+    FEV: "02",
+    MAR: "03",
+    ABR: "04",
+    MAI: "05",
+    JUN: "06",
+    JUL: "07",
+    AGO: "08",
+    SET: "09",
+    OUT: "10",
+    NOV: "11",
+    DEZ: "12"
+  };
+  let date = fixture.date || "";
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) && fixture.day && fixture.month) {
+    const month = monthNumbers[String(fixture.month).slice(0, 3).toUpperCase()];
+    if (month) {
+      date = `2025-${month}-${String(fixture.day).padStart(2, "0")}`;
+    }
+  }
+
+  const defaultFixture = fixtures.find(
+    item =>
+      item.modality === fixture.modality &&
+      item.title === fixture.title &&
+      item.date.slice(5) === date.slice(5)
+  );
+  if (defaultFixture) {
+    date = defaultFixture.date;
+  }
+
+  return {
+    ...fixture,
+    date,
+    naipe: fixture.naipe || "Masculino",
+    campuses: Array.isArray(fixture.campuses) ? fixture.campuses : []
+  };
+}
+
+function campusCodeForName(name) {
+  const normalizedName = normalizeCampusName(name).toLocaleLowerCase("pt-BR");
+  return campuses.find(
+    campus =>
+      normalizeCampusName(campus.name).toLocaleLowerCase("pt-BR") ===
+      normalizedName
+  )?.code;
+}
+
+function fixtureKey(fixture) {
+  return `${fixture.modality}|${fixture.title}`;
+}
+
 function mergeSeededRecords(defaultRecords, savedRecords, getKey) {
   const savedByKey = new Map(
     savedRecords.map(record => [getKey(record), record])
@@ -202,16 +257,49 @@ function loadEditorData() {
         athletes.splice(
           0,
           athletes.length,
-          ...saved.athletes.map(normalizeAthlete)
+          ...mergeSeededRecords(
+            athletes,
+            saved.athletes.map(normalizeAthlete),
+            athlete => athlete.id
+          )
         );
       }
       if (Array.isArray(saved.medals)) {
-        medals.splice(0, medals.length, ...saved.medals);
+        const restoredMedals = saved.medals.map(medal => ({
+          ...medal,
+          code: campusCodeForName(medal.name) || medal.code
+        }));
+        medals.splice(
+          0,
+          medals.length,
+          ...mergeSeededRecords(
+            medals,
+            restoredMedals,
+            medal => normalizeCampusName(medal.name)
+          )
+        );
       }
       if (Array.isArray(saved.campuses)) {
         const restoredCampuses = saved.campuses.map(campus => {
-          const defaults = campuses.find(item => item.code === campus.code);
-          return defaults ? { ...defaults, ...campus } : campus;
+          const defaults =
+            campuses.find(item => item.code === campus.code) ||
+            campuses.find(
+              item =>
+                normalizeCampusName(item.name).toLocaleLowerCase("pt-BR") ===
+                normalizeCampusName(campus.name).toLocaleLowerCase("pt-BR")
+            );
+          const participantCount = Number(campus.athletes);
+          return defaults
+            ? {
+                ...defaults,
+                ...campus,
+                code: defaults.code,
+                athletes:
+                participantCount >= 48 && participantCount <= 60
+                  ? participantCount
+                  : defaults.athletes
+              }
+            : campus;
         });
         const restoredCampusCodes = new Set(
           restoredCampuses.map(campus => campus.code)
@@ -230,7 +318,12 @@ function loadEditorData() {
         );
       }
       if (Array.isArray(saved.fixtures)) {
-        fixtures.splice(0, fixtures.length, ...saved.fixtures);
+        const restoredFixtures = saved.fixtures.map(normalizeFixture);
+        fixtures.splice(
+          0,
+          fixtures.length,
+          ...mergeSeededRecords(fixtures, restoredFixtures, fixtureKey)
+        );
       }
     }
 
@@ -278,7 +371,15 @@ function loadEditorData() {
     }
 
     if (Array.isArray(saved.podiums)) {
-      podiums.splice(0, podiums.length, ...saved.podiums);
+      podiums.splice(
+        0,
+        podiums.length,
+        ...mergeSeededRecords(
+          podiums,
+          saved.podiums,
+          podium => podium.title
+        )
+      );
     }
 
     if (Array.isArray(saved.accessRequests)) {
@@ -375,8 +476,49 @@ function rankedMedals() {
   );
 }
 
-function medalRows(limit = medals.length) {
-  return rankedMedals()
+function medalRows(limit = medals.length, includeAllCampuses = false) {
+  const medalRecords = includeAllCampuses
+    ? campuses.map(campus => {
+        const existingRecord = medals.find(
+          medal =>
+            normalizeCampusName(medal.name).toLocaleLowerCase("pt-BR") ===
+            normalizeCampusName(campus.name).toLocaleLowerCase("pt-BR")
+        );
+        return (
+          existingRecord || {
+            name: `Campus ${normalizeCampusName(campus.name)}`,
+            code: campus.code,
+            gold: 0,
+            silver: 0,
+            bronze: 0
+          }
+        );
+      })
+    : [...medals];
+
+  if (includeAllCampuses) {
+    const listedNames = new Set(
+      medalRecords.map(medal =>
+        normalizeCampusName(medal.name).toLocaleLowerCase("pt-BR")
+      )
+    );
+    medalRecords.push(
+      ...medals.filter(
+        medal =>
+          !listedNames.has(
+            normalizeCampusName(medal.name).toLocaleLowerCase("pt-BR")
+          )
+      )
+    );
+  }
+
+  return medalRecords
+    .sort(
+      (left, right) =>
+        Number(right.gold) - Number(left.gold) ||
+        Number(right.silver) - Number(left.silver) ||
+        Number(right.bronze) - Number(left.bronze)
+    )
     .slice(0, limit)
     .map((campus, index) => {
       const total =
@@ -472,13 +614,13 @@ function fixtureRows(items = fixtures) {
       game => `
         <div class="fixture">
           <div class="fixture-date">
-            <strong>${escapeHtml(game.day)}</strong>
-            <small>${escapeHtml(game.month)}</small>
+            <strong>${escapeHtml(fixtureDateDay(game.date))}</strong>
+            <small>${escapeHtml(fixtureDateMonth(game.date))}</small>
           </div>
           <div class="fixture-info">
             <strong>${escapeHtml(game.title)}</strong>
             <small>
-              ${escapeHtml(game.meta)}
+              ${escapeHtml(game.modality)} · ${escapeHtml(game.meta)}
               ${game.score ? ` · ${escapeHtml(game.score)}` : ""}
             </small>
           </div>
@@ -486,6 +628,26 @@ function fixtureRows(items = fixtures) {
         </div>`
     )
     .join("");
+}
+
+function fixtureDateDay(date) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) ? date.slice(8, 10) : "—";
+}
+
+function fixtureDateMonth(date) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return "A definir";
+  return new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", {
+    month: "short"
+  }).replace(".", "").toUpperCase();
+}
+
+function formatFixtureDate(date) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return "Data a definir";
+  return new Date(`${date}T12:00:00`).toLocaleDateString("pt-BR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
 }
 
 function athleteStatistics(athlete) {

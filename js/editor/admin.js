@@ -257,8 +257,8 @@ function renderAdminAthleteForm() {
           ["Ouro", "Prata", "Bronze", "Sem medalha"]
         ),
         editorField("Marcas e resultados", "marks", athlete.marks),
-        editorField("Foto (URL)", "photo", athlete.photo, "url")
       ])}
+      ${editorImageUpload("Foto do atleta", "photo", athlete.photo)}
       <div id="admin-athlete-stats">
         ${renderAthleteStatisticsFields(athlete)}
       </div>
@@ -309,13 +309,15 @@ function renderAthleteStatisticsFields(athlete) {
 function renderAdminScheduleForm() {
   const isNew = !fixtures[selectedFixtureIndex];
   const fixture = fixtures[selectedFixtureIndex] || {
-    day: "",
-    month: "",
+    date: "",
     title: "",
     meta: "",
     modality: modalities[0]?.name || "",
     tag: "",
-    score: ""
+    score: "",
+    phase: "",
+    naipe: "Masculino",
+    campuses: []
   };
 
   return `
@@ -334,8 +336,7 @@ function renderAdminScheduleForm() {
     )}
     <form data-editor-form="admin-fixture">
       ${editorGrid([
-        editorField("Dia", "day", fixture.day, "number", 'min="1" required'),
-        editorField("Mês", "month", fixture.month, "text", "required"),
+        editorField("Data", "date", fixture.date, "date", "required"),
         editorField("Confronto / evento", "title", fixture.title, "text", "required"),
         editorSelect(
           "Modalidade",
@@ -343,9 +344,23 @@ function renderAdminScheduleForm() {
           fixture.modality,
           modalities.map(item => item.name)
         ),
+        editorSelect(
+          "Naipe",
+          "naipe",
+          fixture.naipe || "Masculino",
+          ["Masculino", "Feminino"]
+        ),
+        editorField("Fase / grupo", "phase", fixture.phase || ""),
         editorField("Modalidade e local", "meta", fixture.meta),
         editorField("Horário / situação", "tag", fixture.tag),
-        editorField("Placar / resultado", "score", fixture.score || "")
+        editorField("Placar / resultado", "score", fixture.score || ""),
+        editorCheckboxes(
+          "Campus participantes (selecione ao menos dois)",
+          "campuses",
+          campuses.map(item => item.name),
+          fixture.campuses || [],
+          "campus-participants"
+        )
       ])}
       ${editorSubmitButton("Salvar programação")}
     </form>`;
@@ -462,6 +477,8 @@ function renderAdminCampusForm() {
     code: "",
     medals: 0,
     athletes: 0,
+    minimumAthletes: 0,
+    maximumAthletes: 60
   };
 
   return `
@@ -481,7 +498,13 @@ function renderAdminCampusForm() {
     <form data-editor-form="admin-campus">
       ${editorGrid([
         editorField("Nome", "name", campus.name, "text", "required"),
-        editorField("Sigla", "code", campus.code, "text", "required"),
+        editorField(
+          "Sigla (2 letras)",
+          "code",
+          campus.code,
+          "text",
+          'minlength="2" maxlength="2" pattern="[A-Za-z]{2}" required'
+        ),
         editorField(
           "Número de medalhas",
           "medals",
@@ -490,11 +513,25 @@ function renderAdminCampusForm() {
           'min="0"'
         ),
         editorField(
-          "Total de estudantes",
+          "Participantes inscritos",
           "athletes",
           campus.athletes,
           "number",
-          'min="0"'
+          'min="48" max="60" required'
+        ),
+        editorField(
+          "Mínimo de participantes",
+          "minimumAthletes",
+          campus.minimumAthletes ?? 0,
+          "number",
+          'min="0" max="60" required'
+        ),
+        editorField(
+          "Máximo de participantes",
+          "maximumAthletes",
+          campus.maximumAthletes ?? 60,
+          "number",
+          'min="0" max="60" required'
         )
       ])}
       ${editorSubmitButton("Salvar campus")}

@@ -1,5 +1,5 @@
 function renderPodios() {
-  const rows = medalRows();
+  const rows = medalRows(campuses.length, true);
   const podiumCards = podiums
     .map(podium => {
       const placements = [
@@ -32,7 +32,6 @@ function renderPodios() {
 
   pageContent.innerHTML = `
     <h1>Pódios e resultados</h1>
-
     ${podiumCards || `
       <section class="panel empty-state">
         Nenhum pódio cadastrado.

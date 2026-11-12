@@ -17,7 +17,7 @@ function renderEditor() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function submitEditorForm(form) {
+async function submitEditorForm(form) {
   if (!isEditorFormAllowed(form.dataset.editorForm)) {
     showToast("Esta área não está disponível para o perfil de servidor.", true);
     return;
@@ -25,9 +25,41 @@ function submitEditorForm(form) {
 
   const formData = new FormData(form);
   const values = Object.fromEntries(formData.entries());
+  const formType = form.dataset.editorForm;
+  if (formType === "admin-fixture") {
+    values.campuses = formData.getAll("campuses");
+    if (values.campuses.length < 2) {
+      showToast("Selecione ao menos dois campus participantes.", true);
+      return;
+    }
+  }
+  if (formType === "admin-athlete") {
+    const photoFile = formData.get("photoUpload");
+    delete values.photoUpload;
+
+    if (photoFile && photoFile.size > 0) {
+      if (!String(photoFile.type).startsWith("image/")) {
+        showToast("Selecione um arquivo de imagem válido.", true);
+        return;
+      }
+      if (photoFile.size > 2 * 1024 * 1024) {
+        showToast("A imagem deve ter no máximo 2 MB.", true);
+        return;
+      }
+
+      try {
+        values.photo = await readImageFile(photoFile);
+      } catch {
+        showToast("Não foi possível ler a imagem selecionada.", true);
+        return;
+      }
+    } else {
+      values.photo = athletes[selectedAdminAthleteIndex]?.photo || "";
+    }
+  }
   if (
-    form.dataset.editorForm === "admin-modality" ||
-    form.dataset.editorForm === "admin-event"
+    formType === "admin-modality" ||
+    formType === "admin-event"
   ) {
     values.naipes = formData.getAll("naipes");
 
@@ -36,7 +68,6 @@ function submitEditorForm(form) {
       return;
     }
   }
-  const formType = form.dataset.editorForm;
   if (formType === "admin-athlete") {
     const selectedAthleticsEvents = formData.getAll(
       "athleticsSubmodalities"
@@ -66,7 +97,8 @@ function submitEditorForm(form) {
     "silver",
     "bronze",
     "medals",
-    "day"
+    "minimumAthletes",
+    "maximumAthletes"
   ];
   if (formType === "admin-modality") {
     numericFields.push("campus");
@@ -77,6 +109,24 @@ function submitEditorForm(form) {
       values[key] = Number(values[key]);
     }
   });
+
+  if (formType === "admin-campus") {
+    values.code = String(values.code || "").trim().toUpperCase();
+    if (
+      values.minimumAthletes > values.maximumAthletes ||
+      values.maximumAthletes > 60 ||
+      values.athletes < 48 ||
+      values.athletes < values.minimumAthletes ||
+      values.athletes > values.maximumAthletes ||
+      !/^[A-Z]{2}$/.test(values.code)
+    ) {
+      showToast(
+        "Informe uma sigla de duas letras e uma contagem entre 48 e 60 participantes, respeitando o limite do campus.",
+        true
+      );
+      return;
+    }
+  }
 
   if (formType === "admin-athlete") {
     if (activeRole === "server") {
@@ -176,6 +226,23 @@ function submitEditorForm(form) {
   }
 
   renderEditor();
+}
+
+function readImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+      } else {
+        reject(new Error("Formato de imagem inválido."));
+      }
+    });
+    reader.addEventListener("error", () => {
+      reject(new Error("Falha na leitura da imagem."));
+    });
+    reader.readAsDataURL(file);
+  });
 }
 
 document.addEventListener("submit", event => {

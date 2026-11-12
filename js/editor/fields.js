@@ -33,7 +33,13 @@ function editorSelect(label, key, value, options) {
     </div>`;
 }
 
-function editorCheckboxes(label, key, values, selectedValues = []) {
+function editorCheckboxes(
+  label,
+  key,
+  values,
+  selectedValues = [],
+  className = ""
+) {
     const checkboxes = values
       .map(
         value => `
@@ -50,10 +56,29 @@ function editorCheckboxes(label, key, values, selectedValues = []) {
       .join("");
 
     return `
-      <fieldset class="form-field editor-checkboxes">
+      <fieldset class="form-field editor-checkboxes ${escapeHtml(className)}">
         <legend>${escapeHtml(label)}</legend>
         ${checkboxes}
       </fieldset>`;
+}
+
+function editorImageUpload(label, key, currentImage = "") {
+  return `
+    <div class="form-field editor-upload">
+      <label for="edit-${key}">${escapeHtml(label)}</label>
+      <input
+        id="edit-${key}"
+        name="${key}Upload"
+        type="file"
+        accept="image/*"
+      />
+      <small>Envie uma imagem de até 2 MB. Deixe vazio para manter a imagem atual.</small>
+      ${
+        currentImage
+          ? `<img class="editor-image-preview" src="${escapeHtml(currentImage)}" alt="Imagem atual do atleta" />`
+          : ""
+      }
+    </div>`;
 }
 
 function editorGrid(fields) {

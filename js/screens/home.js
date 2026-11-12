@@ -1,6 +1,4 @@
 function renderHome() {
-  const upcomingFixtures = fixtures.slice(4, 8);
-
   pageContent.innerHTML = `
     <section class="hero">
       <div class="hero-copy">
@@ -8,7 +6,7 @@ function renderHome() {
           JOGOS DO INSTITUTO FEDERAL CATARINENSE
         </p>
         <h1 style="margin-top: 30px;">
-          JIFC 2025
+          JIFC 2026
         </h1>
 
         <div class="hero-actions" style="margin-top: 50px;">
@@ -22,8 +20,7 @@ function renderHome() {
       </div>
       <div class="hero-scene">
         <div class="hero-upcoming">
-          <strong>Jogos e disputas a cadastrar</strong>
-          <small>Cadastre a programação pelo painel do JIFC.</small>
+          <strong>Jogos ao vivo em breve</strong>
         </div>
       </div>
     </section>
@@ -68,7 +65,7 @@ function renderHome() {
         <div class="panel-title-row">
           <div>
             <h2>Quadro de medalhas</h2>
-            <p>Classificação geral · JIFC 2025</p>
+            <p>Classificação geral · JIFC 2026</p>
           </div>
           <button data-page="podios">
             Ver classificação
@@ -114,8 +111,7 @@ function renderHome() {
       </section>
     </div>
 
-    <div class="home-bottom">
-      <section class="panel">
+    <section class="panel home-bottom home-athletes-panel">
         <div class="panel-title-row">
           <div>
             <h2>Atletas em destaque</h2>
@@ -124,29 +120,12 @@ function renderHome() {
             Ver atletas
           </button>
         </div>
-        <div class="athlete-mini-list">
+        <div class="athlete-mini-list home-athlete-list">
           ${athletes.length
             ? athletes.slice(0, 4).map(athleteMiniCard).join("")
             : `<div class="empty-state">Nenhum atleta cadastrado.</div>`}
         </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-title-row">
-          <div>
-            <h2>Jogos</h2>
-          </div>
-          <button data-page="calendario">
-            Ver agenda
-          </button>
-        </div>
-        <div class="fixture-list">
-          ${upcomingFixtures.length
-            ? fixtureRows(upcomingFixtures)
-            : `<div class="empty-state">Nenhum outro jogo cadastrado.</div>`}
-        </div>
-      </section>
-    </div>`;
+    </section>`;
 }
 
 function athleteMiniCard(athlete) {
